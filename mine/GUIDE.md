@@ -41,3 +41,4 @@ git remote set-url --push upstream DISABLED
 
 This prevents ordinary pushes through that remote, while retaining its fetch URL for pulling updates.
 
+On VSCode, check the branch that appears on the bottom bar

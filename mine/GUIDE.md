@@ -1,4 +1,4 @@
-# Keep receiving updates from Bitbucket but never push there 
+# Keep receiving updates from Bitbucket but never push there
 
 If you want to push your work to GitHub or your own Bitbucket repository, you can use a separate remote.
 
@@ -42,3 +42,9 @@ git remote set-url --push upstream DISABLED
 This prevents ordinary pushes through that remote, while retaining its fetch URL for pulling updates.
 
 On VSCode, check the branch that appears on the bottom bar
+
+---
+
+git remote add upstream https://bitbucket.org/rgcenteno/ud3-26-27.git
+git remote set-url --push upstream DISABLED
+git remote -v

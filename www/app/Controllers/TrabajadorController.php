@@ -20,7 +20,7 @@ class TrabajadorController extends BaseController
         );
 
         $trabajadores = $model->getTrabajadores();
-        $carloses = $model->getTrabajadoresCarlos();
+        $carloses = $model->getTrabajadoresByUsername('pepe');
 
 
         //para ordenar segun sus salarios (opcion1: crear nuevo array donde el salario sea la clave????)

@@ -28,4 +28,17 @@ class TrabajadorModel extends BaseDbModel
         $trabajadores = $this->pdo->query('SELECT * FROM trabajadores t WHERE t.username LIKE "CARLOS%"')->fetchAll();
         return $trabajadores;
     }
+
+    // serachs string on the username
+    public function getTrabajadoresByUsername(string $username): array
+    {
+        $sql = "SELECT * FROM trabajadores t WHERE t.username LIKE '%?%'";
+        // $trabajadores = $this->pdo->query($sql)->fetchAll();
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$username]);
+        $trabajadores = $stmt->fetchAll();
+
+        return $trabajadores;
+    }
 }

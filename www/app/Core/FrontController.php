@@ -191,6 +191,7 @@ class FrontController
             },
             'get'
         );
+        // https://centros.edu.xunta.gal/iespazomerce/aulavirtual/mod/book/view.php?id=95335&chapterid=4975
         Route::add(
             '/test-conexion',
             function () {

@@ -49,6 +49,7 @@
       <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-mbstring" />
       <path value="$PROJECT_DIR$/www/vendor/symfony/polyfill-php80" />
       <path value="$PROJECT_DIR$/www/vendor/vlucas/phpdotenv" />
+      <path value="$PROJECT_DIR$/www/vendor/jetbrains/phpstorm-stubs" />
     </include_path>
   </component>
   <component name="PhpInterpreters">

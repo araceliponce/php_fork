@@ -206,6 +206,14 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/test-conexion',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\TrabajadorController();
+                $controlador->testDb();
+            },
+            'get'
+        );
         Route::pathNotFound(
             function () {
                 $controller = new \Com\Daw2\Controllers\ErroresController();

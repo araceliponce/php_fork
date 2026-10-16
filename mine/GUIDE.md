@@ -48,3 +48,9 @@ On VSCode, check the branch that appears on the bottom bar
 git remote add upstream https://bitbucket.org/rgcenteno/ud3-26-27.git
 git remote set-url --push upstream DISABLED
 git remote -v
+
+---
+
+obtener cambios:
+git merge upstream/main
+and push the merged

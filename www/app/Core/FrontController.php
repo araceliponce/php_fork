@@ -196,10 +196,20 @@ class FrontController
             '/test-conexion',
             function () {
                 $controlador = new \Com\Daw2\Controllers\TrabajadorController();
-                $controlador->testDb();
+                $controlador->conFiltros();
             },
             'get'
         );
+        // Route::add(
+        //     '/test-conexion',
+        //     function () {
+        //         $controlador = new \Com\Daw2\Controllers\TrabajadorController();
+        //         $controlador->doConFiltros();
+        //     },
+        //     'post'
+        // );
+
+
         Route::pathNotFound(
             function () {
                 $controller = new \Com\Daw2\Controllers\ErroresController();

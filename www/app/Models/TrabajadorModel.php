@@ -32,13 +32,31 @@ class TrabajadorModel extends BaseDbModel
     // serachs string on the username
     public function getTrabajadoresByUsername(string $username): array
     {
-        $sql = "SELECT * FROM trabajadores t WHERE t.username LIKE '%?%'";
-        // $trabajadores = $this->pdo->query($sql)->fetchAll();
+        $sql = "SELECT * FROM trabajadores t WHERE t.username LIKE :username";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$username]);
+        $stmt->execute(['username' => '%' . $username . '%']);
         $trabajadores = $stmt->fetchAll();
 
         return $trabajadores;
+    }
+
+    public function getTrabajadoresByRol(string $rol): array
+    {
+        $sql = "SELECT * FROM trabajadores t WHERE t.id_rol = :rol";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['rol' =>  $rol]);
+        $trabajadores = $stmt->fetchAll();
+
+        return $trabajadores;
+    }
+
+    public function getRoles(): array
+    {
+        $sql = "SELECT * FROM aux_rol_trabajador";
+        $roles = $this->pdo->query($sql)->fetchAll();
+
+        return $roles;
     }
 }

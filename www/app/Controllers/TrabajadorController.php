@@ -79,4 +79,49 @@ class TrabajadorController extends BaseController
 
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);
     }
+
+
+
+
+
+    public function conFiltros(array $roles = [], array $errores = [], array $resultado = []): void
+    {
+
+        $model = new TrabajadorModel();
+        $roles = $model->getRoles();
+        $data = array(
+            'titulo' => 'trabajadores con filtros',
+            'breadcrumb' => ['Inicio', '........'],
+        );
+
+
+
+        if (isset($_GET['usernameInput'])) {
+            $input = filter_var($_GET['usernameInput'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $resultado = $model->getTrabajadoresByUsername($input);
+        }
+
+        if ($_GET['rolSelect'] !== []) {
+            $input = filter_var($_GET['rolSelect'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $resultado = $model->getTrabajadoresByRol($input);
+        }
+
+        if (empty($_GET)) {
+            $resultado = $model->getTrabajadoreS();
+        }
+
+        //     $resultado = $model->getTrabajadoresByUsername($_POST['usernameInput']);
+
+
+
+        $data['errores'] = $errores;
+        $data['resultado'] = $resultado;
+        $data['roles'] = $roles;
+        $this->view->showViews(array('templates/header.view.php', 'trabajadores-con-filtros.view.php', 'templates/footer.view.php'), $data);
+    }
+
+
+    //donde colocar el model ???
+
+
 }

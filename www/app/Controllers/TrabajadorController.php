@@ -99,24 +99,92 @@ class TrabajadorController extends BaseController
         if (isset($_GET['usernameInput'])) {
             $input = filter_var($_GET['usernameInput'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $resultado = $model->getTrabajadoresByUsername($input);
+
+            //para poder ver los valores de los input tras enviar el form
+            // $data['usernameInput'] = $input;
         }
 
-        if ($_GET['rolSelect'] !== []) {
-            $input = filter_var($_GET['rolSelect'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        if (isset($_GET['rolSelect'])) {
+            $input = filter_var($_GET['rolSelect'][0], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $resultado = $model->getTrabajadoresByRol($input);
         }
+
+        //busca por un rango de salario especifico
+        // Para desinfectar y validar números de punto flotante en PHP evitando que se borren los puntos o las comas decimales, debes permitir explícitamente estos caracteres. El filtro por defecto FILTER_SANITIZE_NUMBER_FLOAT elimina ambos a menos que uses banderas (flags).
+
+
+        /*
+
+2. La solución recomendada: Convertir a formato flotante real (Float)
+
+Desinfectar solo limpia el texto, pero no lo convierte en un número utilizable por PHP (PHP usa estrictamente el punto . para los decimales). Si tu entrada usa comas ,, debes reemplazarlas antes de validar o castear:
+php
+$input = "1.234,56"; // Formato común con coma decimal
+
+// 1. Reemplazar la coma por punto (y eliminar puntos de miles si los hubiera)
+$clean = str_replace(',', '.', $input); 
+
+// 2. Validar que sea un float correcto
+$float = filter_var($clean, FILTER_VALIDATE_FLOAT);
+
+if ($float !== false) {
+    echo "Número válido: " . $float; // 1234.56
+} else {
+    echo "No es un número válido";
+}
+*/
+
+        if (isset($_GET['salarioMinInput']) & isset($_GET['salarioMaxInput'])) {
+            $min = (float) filter_var($_GET['salarioMinInput'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            $max = (float) filter_var($_GET['salarioMaxInput'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            $resultado = $model->getTrabajadoresBySalarioRango($min, $max);
+
+            //para poder ver los valores de los input tras enviar el form
+            // $data['salarioMinInput'] = $min;
+            // $data['salarioMaxInput'] = $max;
+        }
+
+
+        if (isset($_GET['countriesSelect'])) {
+            $input =  filter_var_array($_GET['countriesSelect'], FILTER_SANITIZE_SPECIAL_CHARS);
+
+            $resultado = $model->getTrabajadoresByCountries($input);
+
+            $data['countriesSelected'] = $input;
+        }
+
+
+
 
         if (empty($_GET)) {
             $resultado = $model->getTrabajadoreS();
         }
 
-        //     $resultado = $model->getTrabajadoresByUsername($_POST['usernameInput']);
+
+        // Source - https://stackoverflow.com/a/45287155
+        // Posted by Just_Do_It
+        // Retrieved 2026-10-21, License - CC BY-SA 3.0
+
+        if (isset($_GET['reset'])) {
+            // $_GET = array();
+            // Source - https://stackoverflow.com/a/1251603
+            // Posted by Matt Bridges, modified by community. See post 'Timeline' for change history
+            // Retrieved 2026-10-21, License - CC BY-SA 2.5
+
+            $pos = strpos($url, "?");
+            $url = substr($url, 0, $pos);
+        }
 
 
 
         $data['errores'] = $errores;
         $data['resultado'] = $resultado;
         $data['roles'] = $roles;
+        $data['countries'] = $model->getCountries();;
+
+
+
+
         $this->view->showViews(array('templates/header.view.php', 'trabajadores-con-filtros.view.php', 'templates/footer.view.php'), $data);
     }
 

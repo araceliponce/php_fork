@@ -53,15 +53,16 @@
       <select name="countriesSelect[]" id="countriesSelect" class="form-control select2" multiple>
         <option value="">selecciona paises</option>
         <?php foreach ($countries as $country): ?>
-          <option value="<?= $country['id'] ?>" <?= in_array($country['id'], $countriesSelected) ? 'selected' : '' ?> classname='algo'><?= $country['country_name'] ?></option>
+          <option value="<?= $country['id'] ?>" <?= in_array($country['id'], $countriesSelected ?? []) ? 'selected' : '' ?> classname='algo'><?= $country['country_name'] ?></option>
         <?php endforeach;  ?>
       </select>
     </div>
 
     <div class="pt-2 pb-5">
 
-      <button type="submit" class="btn btn-primary btn-default">enviar</button>
-      <input type="reset">reset</input>
+      <button type="submit" class="btn btn-primary btn-default">Enviar</button>
+      <!-- es un link que limpiar el url -->
+      <a href="/test-conexion" value="" name="reiniciar" class="btn btn-danger">Reiniciar filtros</a>
     </div>
   </form>
 

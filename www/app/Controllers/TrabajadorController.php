@@ -36,6 +36,7 @@ class TrabajadorController extends BaseController
         );
         $model = new TrabajadorModel();
         $data['trabajadores'] = $model->getAllTrabajadoresOrdenados();
+
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);
     }
 
@@ -53,9 +54,22 @@ class TrabajadorController extends BaseController
         $input = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $data['trabajadores'] = $model->getFilterBy($_GET);
+        $data['sortedTrabajadores'] =  $this->sortByKey($data['trabajadores'], 'salarioBruto');
+
         $data['roles'] = $auxTrabajadorRolModel->getAll();
         $data['countries'] = $countriesModel->getAll();
         $data['input'] = $input;
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);
+    }
+
+    private function sortByKey(array $array, string $clave)
+    {
+
+        // en PHP las funciones anónimas (o closures) no heredan automáticamente las variables del ámbito exterior. La variable $clave existe dentro del método sortByKey, pero la función interna de usort no la puede ver.
+        // Para solucionarlo, debes "importar" la variable dentro de la función interna, agregando: use ($clave).
+        $res = usort($array, function ($a, $b) use ($clave) {
+            return $a[$clave] <=> $b[$clave]; // Orden ascendente
+        });
+        return $res;
     }
 }

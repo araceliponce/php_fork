@@ -84,13 +84,26 @@ class TrabajadorModel extends BaseDbModel
             $values = array_merge($values, $countries);
         }
 
-        $sql .= " WHERE " . implode(" AND ", $addedFilters);
 
-        // var_dump($sql); //BIEN
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($values);
-        return $stmt->fetchAll();
-        // return [];
+        var_dump($filtros); //
+
+        //si no hay filtro aplicado no agrega nada
+        if ($addedFilters !== []) {
+            $sql .= " WHERE " . implode(" AND ", $addedFilters);
+
+            //si existe el filtro orderingBy y esta dentro de un array de filtros aceptados, agregar el order by al sql
+            if ($filtros['orderingBy']) {
+                //implementar
+            }
+
+            var_dump($sql); //BIEN
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($values);
+            return $stmt->fetchAll();
+        } else {
+            var_dump($sql); //BIEN
+            return [];
+        }
     }
 
     public function getFilterByOriginal(array $filtros): array

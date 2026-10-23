@@ -80,7 +80,13 @@
     <table>
       <thead>
 
-        <th>username</th>
+        <th>
+          <div>
+            username
+            <a href="/test-conexion?key=username&order=asc">a-z</a>
+            <a href="/test-conexion?key=username&order=desc">z-a</a>
+          </div>
+        </th>
         <th>rol (id)</th>
         <th>salario</th>
         <th>retencion</th>
@@ -90,7 +96,7 @@
       <tbody>
         <?php foreach ($resultado as $trabajador) : ?>
           <tr>
-            <td><?php echo $trabajador['username']; ?> </b>
+            <td> <?php echo $trabajador['username']; ?> </b>
             <td><?php echo $trabajador['id_rol']; ?> </b>
             <td><?php echo $trabajador['salarioBruto']; ?> </b>
             <td><?php echo $trabajador['retencionIRPF']; ?> </b>

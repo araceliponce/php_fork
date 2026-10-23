@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+    const manifest = {
+      containerId: 1,
+      destination: "Monterey, California, USA",
+      weight: 831,
+      unit: "lb",
+      hazmat: false
+    }
+    const manifest2 =
+    {
+      containerId: null, destination: "Santa Cruz", weight: 304, unit: "kg", hazmat: false
+    }
+    console.log(normalizeUnits(manifest2))
+
+
+    //Note: Do not declare normalizeUnits, validateManifest, or processManifest using const, since the tests need to reassign them.function normalizeUnits(manifest) {
+    function normalizeUnits(manifest) {
+      const newManifest = { ...manifest };
+      if (manifest.unit === "lb") {
+        newManifest.weight = manifest.weight * 0.45;
+        newManifest.unit = "kg";
+      }
+      return newManifest;
+    }
+
+    function validateManifest(manifest) {
+      //si no es objeto, o es nulo o es array
+      if (typeof manifest !== "object" || manifest === null || Array.isArray(manifest)) {
+        return {
+          containerId: "Missing",
+          destination: "Missing",
+          weight: "Missing",
+          unit: "Missing",
+          hazmat: "Missing"
+        };
+      }
+
+      const errors = {
+        containerId: undefined,
+        destination: undefined,
+        weight: undefined,
+        unit: undefined,
+        hazmat: undefined
+      };
+
+      // if the input manifest is not valid, the function should return an object containing entries for each missing or invalid property. Missing properties should have the value "Missing" and invalid properties should have the value "Invalid".
+
+      // 10. Your validateManifest function should return the new object { containerId: "Invalid" } when called with { containerId: null, destination: "Santa Cruz", weight: 304, unit: "kg", hazmat: false }, without mutating the original.
+
+      if (manifest.containerId == null) {
+        errors.containerId = "Invalid";
+      } else if (!Number.isInteger(manifest.containerId) || manifest.containerId < 1) {
+        errors.containerId = "Invalid";
+      }
+
+      if (manifest.destination == null) {
+        errors.destination = "Missing";
+      } else if (typeof manifest.destination !== "string" || manifest.destination.trim() === "") {
+        errors.destination = "Invalid";
+      }
+
+      if (manifest.weight == null) {
+        errors.weight = "Missing";
+      } else if (typeof manifest.weight !== "number" || Number.isNaN(manifest.weight) || manifest.weight < 0) {
+        errors.weight = "Invalid";
+      }
+
+      if (manifest.unit == null) {
+        errors.unit = "Missing";
+      } else if (manifest.unit !== "kg" && manifest.unit !== "lb") {
+        errors.unit = "Invalid";
+      }
+
+      if (manifest.hazmat == null) {
+        errors.hazmat = "Missing";
+      } else if (typeof manifest.hazmat !== "boolean") {
+        errors.hazmat = "Invalid";
+      }
+
+      for (const key in errors) {
+        if (errors[key] === undefined) {
+          delete errors[key];
+        }
+      }
+
+      // If the  manifest is valid (no missing or invalid properties), the function should return an empty object.
+
+      return errors;
+    }
+
+    function processManifest(manifest) {
+      const errors = validateManifest(manifest);
+
+      if (Object.keys(errors).length > 0) {
+        console.log(`Validation error: ${manifest.containerId}`);
+        console.log(errors);
+        return;
+      }
+
+      console.log(`Validation success: ${manifest.containerId}`);
+
+      const normalized = normalizeUnits(manifest);
+      console.log(`Total weight: ${normalized.weight} kg`);
+    }
+
+
+  </script>
+</body>
+
+</html>

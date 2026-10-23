@@ -104,7 +104,7 @@ class TrabajadorController extends BaseController
             // $data['usernameInput'] = $input;
         }
 
-        if (isset($_GET['rolSelect'])) {
+        if (isset($_GET['rolSelect']) && $_GET['rolSelect'] !== []) {
             $input = filter_var($_GET['rolSelect'][0], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
             $resultado = $model->getTrabajadoresByRol($input);
         }

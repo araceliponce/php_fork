@@ -54,3 +54,21 @@ git remote -v
 obtener cambios:
 git merge upstream/main
 and push the merged
+
+--- 23 oct
+
+git pull --no-rebase upstream main
+
+Esto utiliza merge para integrar los cambios de bitbucket en tu rama local.
+
+- Conserva tus commits locales.
+- Incorpora los commits de upstream/main.
+- Si hay conflictos, tendrás que resolverlos antes de terminar la integración.
+
+Si quieres utilizar merge por defecto en este repositorio:
+git config pull.rebase false
+
+Después, podrás ejecutar normalmente:
+git pull upstream main
+
+Esta configuración solo afecta al repositorio actual.

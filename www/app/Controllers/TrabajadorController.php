@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Com\Daw2\Controllers;
@@ -44,15 +45,17 @@ class TrabajadorController extends BaseController
             'titulo' => 'Listado trabajadores',
             'breadcrumb' => ['Inicio', 'Trabajadores'],
         );
+
         $model = new TrabajadorModel();
-        $data['trabajadores'] = $model->getFilterBy($_GET);
         $auxTrabajadorRolModel = new AuxRolTrabajadorModel();
-        $data['roles'] = $auxTrabajadorRolModel->getAll();
         $countriesModel = new AuxCountriesModel();
-        $data['countries'] = $countriesModel->getAll();
+
         $input = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+        $data['trabajadores'] = $model->getFilterBy($_GET);
+        $data['roles'] = $auxTrabajadorRolModel->getAll();
+        $data['countries'] = $countriesModel->getAll();
         $data['input'] = $input;
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);
     }
-
 }

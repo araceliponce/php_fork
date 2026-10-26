@@ -99,9 +99,15 @@ class TrabajadorModel extends BaseDbModel
 
         //order by siempredespues del where:
         //si existe el filtro orderingBy y esta dentro de un array de filtros aceptados, usar el orderby al sql
+        //order by es por defecto asc
+        //no usar el nombre de las columnas reales
+        // http_build_query
         if (!empty($filtros['orderingBy'])) {
 
-            $sql .= " ORDER BY " . $filtros['orderingBy'];
+            //los nombres reales
+            $columnas = ['username', 'salarioBruto', 'retencionIRPF', 'nombre_rol', 'id_country'];
+
+            $sql .= " ORDER BY " . $columnas[$filtros['orderingBy'] - 1];
             var_dump($sql); //ver
 
         }

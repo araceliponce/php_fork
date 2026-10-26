@@ -96,22 +96,25 @@
                 <div id="button_container" class="mb-3"></div>
                 <!--<form action="./?sec=formulario" method="post">                   -->
                 <table id="tabladatos" class="table table-striped">
+
+
+
                     <thead>
                         <tr>
-                            <th>
+                            <?php
+                            $columnas = ['Username', 'Salario Bruto', 'Retención', 'Rol', 'País'];
 
-                                <span>Username</span>
-                                <a href="<?= $_SERVER['REQUEST_URI'] . "&orderingBy=username" ?> ">a-z</a>
+                            foreach ($columnas as $indice => $nombre_col) {
 
+                                $numero_columna = $indice + 1;
+                                $query = http_build_query(array_merge($_GET, ['orderingBy' => $numero_columna]));
+                            ?>
 
-                            </th>
-                            <th>
-                                <span>Salario Bruto</span>
-                                <a href="<?= $_SERVER['REQUEST_URI'] . "&orderingBy=salarioBruto" ?> ">↓</a>
-                            </th>
-                            <th>Retención</th>
-                            <th>Rol</th>
-                            <th>País</th>
+                                <th>
+                                    <?= $nombre_col; ?>
+                                    <a href="<?= $_SERVER['REQUEST_URI'] . "&orderingBy=$query" ?> ">↓</a>
+                                </th>
+                            <?php } ?>
                         </tr>
                     </thead>
                     <tbody>

@@ -84,7 +84,7 @@
             </form>
         </div>
     </div>
-    <?= var_dump($sortedTrabajadores) ?>
+    <!-- <?= var_dump($sortedTrabajadores) ?> -->
     <div class="col-12">
         <div class="card shadow mb-4">
             <div
@@ -104,15 +104,34 @@
                             <?php
                             $columnas = ['Username', 'Salario Bruto', 'Retención', 'Rol', 'País'];
 
+                            $direction =  strtoupper($_GET['direction'] ?? 'ASC'); //default es asc
+                            $nextDirection = $direction === 'ASC' ? 'DESC' : 'ASC';
+
+
+
+                            //en este caso habra solo 1 order para todos los encabezados ?
+                            //seria mejor si cada columna tiene su propio order.
+
                             foreach ($columnas as $indice => $nombre_col) {
 
                                 $numero_columna = $indice + 1;
-                                $query = http_build_query(array_merge($_GET, ['orderingBy' => $numero_columna]));
+
+                                //array_merge($_GET, [...]) conserva los demás filtros y parámetros, pero sustituye orderingBy y direction por sus nuevos valores.
+                                $params = array_merge($_GET, [
+                                    'orderingBy' => $numero_columna,
+                                    'direction' => $nextDirection
+                                ]);
+
+                                // $_SERVER['PHP_SELF'] obtiene la ruta del script sin incluir los parámetros actuales.
+                                // $_SERVER['REQUEST_URI'] obtiene ....
+                                $url = $_SERVER['REQUEST_URI']  . '/trabajadores?' . http_build_query($params);
+
+
                             ?>
 
                                 <th>
                                     <?= $nombre_col; ?>
-                                    <a href="<?= $_SERVER['REQUEST_URI'] . "&orderingBy=$query" ?> ">↓</a>
+                                    <a href="<?= $url ?> ">↓↑</a>
                                 </th>
                             <?php } ?>
                         </tr>

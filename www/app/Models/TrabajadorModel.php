@@ -106,13 +106,31 @@ class TrabajadorModel extends BaseDbModel
 
             //los nombres reales
             $columnas = ['username', 'salarioBruto', 'retencionIRPF', 'nombre_rol', 'id_country'];
+            // https://centros.edu.xunta.gal/iespazomerce/aulavirtual/mod/book/view.php?id=95335&chapterid=4972
+            $orderBy = 'username'; //default 
 
-            $sql .= " ORDER BY " . $columnas[$filtros['orderingBy'] - 1];
+
+            $orderBy =  $columnas[$filtros['orderingBy'] - 1];
+
+            $sql .= " ORDER BY " . $orderBy;
             var_dump($sql); //ver
 
+
+            if (!empty($filtros['direction'])) {
+
+                $direction = $filtros['direction'];
+
+
+                $sql .= " " . $direction;
+                var_dump($sql); //ver
+
+            }
         }
 
-        // var_dump($sql); //ver
+
+
+
+        var_dump($sql); //ver
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($values);
         return $stmt->fetchAll();

@@ -87,23 +87,29 @@ class TrabajadorModel extends BaseDbModel
 
         var_dump($filtros); //
 
-        //si no hay filtro aplicado no agrega nada
-        if ($addedFilters !== []) {
-            $sql .= " WHERE " . implode(" AND ", $addedFilters);
+        if ($addedFilters == []) return [];
 
-            //si existe el filtro orderingBy y esta dentro de un array de filtros aceptados, agregar el order by al sql
-            if ($filtros['orderingBy']) {
-                //implementar
-            }
 
-            var_dump($sql); //BIEN
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->execute($values);
-            return $stmt->fetchAll();
-        } else {
-            var_dump($sql); //BIEN
-            return [];
+
+
+
+
+        $sql .= " WHERE " . implode(" AND ", $addedFilters);
+        // var_dump($sql); //ver
+
+        //order by siempredespues del where:
+        //si existe el filtro orderingBy y esta dentro de un array de filtros aceptados, usar el orderby al sql
+        if (!empty($filtros['orderingBy'])) {
+
+            $sql .= " ORDER BY " . $filtros['orderingBy'];
+            var_dump($sql); //ver
+
         }
+
+        // var_dump($sql); //ver
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($values);
+        return $stmt->fetchAll();
     }
 
     public function getFilterByOriginal(array $filtros): array

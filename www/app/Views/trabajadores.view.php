@@ -99,13 +99,16 @@
                     <thead>
                         <tr>
                             <th>
-                                <div>
-                                    Username
-                                    <a href="<?= $_SERVER['REQUEST_URI'] . "&orderingBy=username" ?> ">a-z</a>
-                                </div>
+
+                                <span>Username</span>
+                                <a href="<?= $_SERVER['REQUEST_URI'] . "&orderingBy=username" ?> ">a-z</a>
+
 
                             </th>
-                            <th>Salario Bruto</th>
+                            <th>
+                                <span>Salario Bruto</span>
+                                <a href="<?= $_SERVER['REQUEST_URI'] . "&orderingBy=salarioBruto" ?> ">↓</a>
+                            </th>
                             <th>Retención</th>
                             <th>Rol</th>
                             <th>País</th>

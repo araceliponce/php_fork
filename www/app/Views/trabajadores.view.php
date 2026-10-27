@@ -116,7 +116,7 @@
 
                                 $numero_columna = $indice + 1;
 
-                                //array_merge($_GET, [...]) conserva los demás filtros y parámetros, pero sustituye orderingBy y direction por sus nuevos valores.
+                                //array_merge($_GET, [...])  combina 2 arrays (get y array de []) y mergea los que tienen el mismo key.
                                 $params = array_merge($_GET, [
                                     'orderingBy' => $numero_columna,
                                     'direction' => $nextDirection

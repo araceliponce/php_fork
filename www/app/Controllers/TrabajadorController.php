@@ -46,12 +46,17 @@ class TrabajadorController extends BaseController
         );
         $model = new TrabajadorModel();
         $data['trabajadores'] = $model->getFilterBy($_GET);
+        $data['order'] = $model->getOrderIndex($_GET);
         $auxTrabajadorRolModel = new AuxRolTrabajadorModel();
         $data['roles'] = $auxTrabajadorRolModel->getAll();
         $countriesModel = new AuxCountriesModel();
         $data['countries'] = $countriesModel->getAll();
         $input = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $data['input'] = $input;
+        //No modificamos la superglobal, la copiamos en $getOrder
+        $getOrder = $_GET;
+        unset($getOrder['order']);
+        $data['queryParams'] = http_build_query($getOrder);
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);
     }
 

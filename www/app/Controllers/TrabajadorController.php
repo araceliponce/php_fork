@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Com\Daw2\Controllers;
@@ -55,9 +56,10 @@ class TrabajadorController extends BaseController
         $data['input'] = $input;
         //No modificamos la superglobal, la copiamos en $getOrder
         $getOrder = $_GET;
+
+        //si existe order lo quita
         unset($getOrder['order']);
         $data['queryParams'] = http_build_query($getOrder);
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);
     }
-
 }

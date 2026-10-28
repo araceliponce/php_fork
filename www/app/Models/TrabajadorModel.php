@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Com\Daw2\Models;
@@ -64,7 +65,7 @@ class TrabajadorModel extends BaseDbModel
         if (!empty($filtros['id_country']) && is_array($filtros['id_country'])) {
             $countries = [];
             $i = 1;
-            foreach($filtros['id_country'] as $idCountry) {
+            foreach ($filtros['id_country'] as $idCountry) {
                 $countries[":id_country{$i}"] = $idCountry;
                 $i++;
             }
@@ -81,14 +82,41 @@ class TrabajadorModel extends BaseDbModel
         return $stmt->fetchAll();
     }
 
-    public function getOrderIndex(array $filtros): int
+    public function oldgetOrderIndex(array $filtros): int
     {
+        //si no se envia ningun param order en el url usa default
         if (empty($filtros['order'])) {
             return self::DEFAULT_ORDER_INDEX;
         } elseif (filter_var($filtros['order'], FILTER_VALIDATE_INT) === false || $filtros['order'] < 1 || $filtros['order'] > count(self::ORDER_FIELDS)) {
+            //tambien usa default si no es un int valido, o si esta fuera del rango
             return self::DEFAULT_ORDER_INDEX;
         } else {
             return (int)$filtros['order'];
         }
+    }
+
+    public function getOrderIndex(array $filtros): int
+    {
+        // Si no se envía order, usamos el valor por defecto
+        if (empty($filtros['order'])) {
+            return self::DEFAULT_ORDER_INDEX;
+        }
+
+        // Validamos que sea un entero
+        $order = filter_var($filtros['order'], FILTER_VALIDATE_INT);
+
+        if ($order === false) {
+            return self::DEFAULT_ORDER_INDEX;
+        }
+
+        // Convertimos el índice a positivo
+        $order = abs($order);
+
+        // Validamos que esté dentro del rango permitido
+        if ($order === 0 || $order > count(self::ORDER_FIELDS)) {
+            return self::DEFAULT_ORDER_INDEX;
+        }
+
+        return $order;
     }
 }

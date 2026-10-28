@@ -4,17 +4,18 @@
         <div class="card shadow mb-4">
             <form method="get" action="">
                 <div
-                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Filtros</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <input type="hidden" name="order" value="<?php echo $order; ?>"/>
+                    <!-- input hidden para mantener el valor incluso si despues de hace submit del formulario -->
+                    <input type="hidden" name="order" value="<?php echo $order; ?>" />
                     <div class="row">
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
                                 <label for="username">Username:</label>
-                                <input type="text" class="form-control" name="username" id="username" value="<?php echo $input['username'] ?? '';?>"  />
+                                <input type="text" class="form-control" name="username" id="username" value="<?php echo $input['username'] ?? ''; ?>" />
                             </div>
                         </div>
                         <div class="col-12 col-lg-4">
@@ -23,9 +24,9 @@
                                 <select name="id_rol" id="id_rol" class="form-control select2">
                                     <option value="">-</option>
                                     <?php foreach ($roles as $rol) {
-                                        ?>
+                                    ?>
                                         <option value="<?php echo $rol['id_rol'] ?>" <?php echo (isset($input['id_rol']) && $rol['id_rol'] == $input['id_rol']) ? 'selected' : ''; ?>><?php echo ucfirst($rol['nombre_rol']); ?></option>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </select>
@@ -40,7 +41,7 @@
                                         <input type="text" class="form-control" name="min_salarioBruto" id="min_salarioBruto" value="<?php echo $input['min_salarioBruto'] ?? '' ?>" placeholder="Mínimo" />
                                     </div>
                                     <div class="col-6">
-                                        <input type="text" class="form-control" name="max_salarioBruto" id="max_SalarioBruto" value="<?php echo $input['max_salarioBruto'] ?? ''?>" placeholder="Máximo" />
+                                        <input type="text" class="form-control" name="max_salarioBruto" id="max_SalarioBruto" value="<?php echo $input['max_salarioBruto'] ?? '' ?>" placeholder="Máximo" />
                                     </div>
                                 </div>
                             </div>
@@ -53,7 +54,7 @@
                                         <input type="text" class="form-control" name="min_retencionIRPF" id="min_retencionIRPF" value="<?php echo $input['min_retencionIRPF'] ?? '' ?>" placeholder="Mínimo" />
                                     </div>
                                     <div class="col-6">
-                                        <input type="text" class="form-control" name="max_retencionIRPF" id="max_retencionIRPF" value="<?php echo $input['max_retencionIRPF'] ?? ''?>" placeholder="Máximo" />
+                                        <input type="text" class="form-control" name="max_retencionIRPF" id="max_retencionIRPF" value="<?php echo $input['max_retencionIRPF'] ?? '' ?>" placeholder="Máximo" />
                                     </div>
                                 </div>
                             </div>
@@ -63,9 +64,9 @@
                                 <label for="id_country">País:</label>
                                 <select name="id_country[]" id="id_country" class="form-control select2" multiple>
                                     <?php foreach ($countries as $country) {
-                                        ?>
+                                    ?>
                                         <option value="<?php echo $country['id_country'] ?>" <?php echo (isset($input['id_country']) && in_array($country['id_country'], $input['id_country'])) ? 'selected' : ''; ?>><?php echo ucfirst($country['country_name']); ?></option>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </select>
@@ -76,8 +77,8 @@
                 </div>
                 <div class="card-footer">
                     <div class="col-12 text-right">
-                        <a href="<?php echo strtok($_SERVER['REQUEST_URI'] ?? '/', '?')?>" value="" class="btn btn-danger">Reiniciar filtros</a>
-                        <input type="submit" value="Aplicar filtros" name="enviar" class="btn btn-primary ml-2"/>
+                        <a href="<?php echo strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?>" value="" class="btn btn-danger">Reiniciar filtros</a>
+                        <input type="submit" value="Aplicar filtros" name="enviar" class="btn btn-primary ml-2" />
                     </div>
                 </div>
             </form>
@@ -93,34 +94,116 @@
             <div class="card-body" id="card_table">
                 <div id="button_container" class="mb-3"></div>
                 <!--<form action="./?sec=formulario" method="post">                   -->
-                <table id="tabladatos" class="table table-striped">                    
+                <table id="tabladatos" class="table table-striped">
                     <thead>
                         <tr>
-                            <th><a href="/trabajadores?order=1&<?php echo $queryParams ?>">Username</a></a> <?php if ($order === 1): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?></th>
-                            <th><a href="/trabajadores?order=2&<?php echo $queryParams ?>">Salario Bruto</a> <?php if ($order === 2): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?></th>
-                            <th><a href="/trabajadores?order=3&<?php echo $queryParams ?>">Retención</a> <?php if ($order === 3): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?></th>
-                            <th><a href="/trabajadores?order=4&<?php echo $queryParams ?>">Rol</a> <?php if ($order === 4): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?></th>
-                            <th><a href="/trabajadores?order=5&<?php echo $queryParams ?>">País</a> <?php if ($order === 5): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?></th>
+                            <?php
+
+                            $multipliers = [1, 1, 1, 1, 1];
+
+                            $columnsHeaders = [
+                                0 => [
+                                    'display' => 'Username',
+                                    'multiplier' => 1
+                                ],
+                                1 => [
+                                    'display' => 'Salario Bruto',
+                                    'multiplier' => 1
+                                ],
+                                2 => [
+                                    'display' => 'Retención',
+                                    'multiplier' => 1
+                                ],
+                                3 => [
+                                    'display' => 'rol',
+                                    'multiplier' => 1
+                                ],
+                                4 => [
+                                    'display' => 'pais',
+                                    'multiplier' => 1
+                                ]
+                            ];
+
+
+
+                            // si existe un $order en el url, entonces el multiplier de ese column header se cambia
+                            //nota: aqui cada vez que cambie el order del url, cambiar el valor de ese index del array headercolumns.....................
+                            // var_dump($queryParams);
+
+
+                            // if (abs($order) == ($value['multiplier'] / abs($value['multiplier']))) {
+                            //     if ($value['multiplier'] === -1) {
+                            //         $value['multiplier'] = 1;
+                            //     } else {
+                            //         $value['multiplier'] = -1;
+                            //     }
+                            // };
+
+
+                            foreach ($columnsHeaders as $headerIndex => $value) {
+
+                                // $header es el key de cada subarray. si el order param en el url es = al valor absoluto del (header +1)
+
+
+                                //por ejemplo -5/5 = -1
+                                // $value['multiplier'] / abs($value['multiplier']))
+
+
+                                $orderFinal = $value['multiplier'] * ($headerIndex + 1);
+
+                            ?>
+
+                                <th>
+                                    <a href="/trabajadores?order=<?php echo $orderFinal . '&' . $queryParams ?>">
+                                        <?= $value['display']; ?>
+                                    </a>
+                                    <?php if ($order === $orderFinal): ?> <i class="fas fa-sort-amount-down-alt"></i> <?php endif; ?>
+                                </th>
+                            <?php
+
+                            } //fin del foreach columnheaders
+
+                            ?>
+                            <!-- <th>
+                                <a href="/trabajadores?order=1&<?php echo $queryParams ?>">Username</a>
+                                <?php if (abs($order) === 1): ?> <i class="fas fa-sort-amount-down-alt"></i> <?php endif; ?>
+                            </th>
+                            <th>
+                                <a href="/trabajadores?order=2&<?php echo $queryParams ?>">Salario Bruto</a>
+                                <?php if (abs($order) === 2): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?>
+                            </th>
+                            <th>
+                                <a href="/trabajadores?order=3&<?php echo $queryParams ?>">Retención</a>
+                                <?php if (abs($order) === 3): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?>
+                            </th>
+                            <th>
+                                <a href="/trabajadores?order=4&<?php echo $queryParams ?>">Rol</a>
+                                <?php if (abs($order) === 4): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?>
+                            </th>
+                            <th>
+                                <a href="/trabajadores?order=5&<?php echo $queryParams ?>">País</a>
+                                <?php if (abs($order) === 5): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?>
+                            </th> -->
                         </tr>
                     </thead>
                     <tbody>
-                    <?php
-                    foreach ($trabajadores as $trabajador) {
-                    ?>
-                        <tr class="<?php echo $trabajador['activo'] ? '' : 'table-danger'; ?>">
-                            <td><?php echo $trabajador['username'] ?></td>
-                            <td><?php echo $trabajador['salarioBruto'] ?></td>
-                            <td><?php echo $trabajador['retencionIRPF'] ?>%</td>
-                            <td><?php echo $trabajador['nombre_rol'] ?></td>
-                            <td><?php echo $trabajador['country_name'] ?></td>
-                        </tr>
-                    <?php
-                    }
-                    ?>
-                    </tbody>                    
+                        <?php
+                        foreach ($trabajadores as $trabajador) {
+                        ?>
+                            <tr class="<?php echo $trabajador['activo'] ? '' : 'table-danger'; ?>">
+                                <td><?php echo $trabajador['username'] ?></td>
+                                <td><?php echo $trabajador['salarioBruto'] ?></td>
+                                <td><?php echo $trabajador['retencionIRPF'] ?>%</td>
+                                <td><?php echo $trabajador['nombre_rol'] ?></td>
+                                <td><?php echo $trabajador['country_name'] ?></td>
+                            </tr>
+                        <?php
+                        }
+                        ?>
+                    </tbody>
                 </table>
             </div>
         </div>
-    </div>                        
+    </div>
 </div>
 <!--Fin HTML -->

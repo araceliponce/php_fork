@@ -99,8 +99,6 @@
                         <tr>
                             <?php
 
-                            $multipliers = [1, 1, 1, 1, 1];
-
                             $columnsHeaders = [
                                 0 => [
                                     'display' => 'Username',
@@ -137,7 +135,7 @@
 
 
                             foreach ($columnsHeaders as $headerIndex => $value) {
-
+                                //cosa rra que no recuerdo.
                                 $orderToDisplay = $value['multiplier'] * ($order / abs($order))  * ($headerIndex + 1);
 
                             ?>

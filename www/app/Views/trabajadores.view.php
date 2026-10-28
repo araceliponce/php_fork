@@ -154,26 +154,6 @@
                             } //fin del foreach columnheaders
 
                             ?>
-                            <!-- <th>
-                                <a href="/trabajadores?order=1&<?php echo $queryParams ?>">Username</a>
-                                <?php if (abs($order) === 1): ?> <i class="fas fa-sort-amount-down-alt"></i> <?php endif; ?>
-                            </th>
-                            <th>
-                                <a href="/trabajadores?order=2&<?php echo $queryParams ?>">Salario Bruto</a>
-                                <?php if (abs($order) === 2): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?>
-                            </th>
-                            <th>
-                                <a href="/trabajadores?order=3&<?php echo $queryParams ?>">Retención</a>
-                                <?php if (abs($order) === 3): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?>
-                            </th>
-                            <th>
-                                <a href="/trabajadores?order=4&<?php echo $queryParams ?>">Rol</a>
-                                <?php if (abs($order) === 4): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?>
-                            </th>
-                            <th>
-                                <a href="/trabajadores?order=5&<?php echo $queryParams ?>">País</a>
-                                <?php if (abs($order) === 5): ?><i class="fas fa-sort-amount-down-alt"></i><?php endif; ?>
-                            </th> -->
                         </tr>
                     </thead>
                     <tbody>

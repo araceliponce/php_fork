@@ -127,37 +127,30 @@
 
 
                             // si existe un $order en el url, entonces el multiplier de ese column header se cambia
-                            //nota: aqui cada vez que cambie el order del url, cambiar el valor de ese index del array headercolumns.....................
-                            // var_dump($queryParams);
+                            //nota: aqui cada vez que cambie el $order del url, cambiar el valor de ese index del array headercolumns.....................
 
 
-                            // if (abs($order) == ($value['multiplier'] / abs($value['multiplier']))) {
-                            //     if ($value['multiplier'] === -1) {
-                            //         $value['multiplier'] = 1;
-                            //     } else {
-                            //         $value['multiplier'] = -1;
-                            //     }
-                            // };
+                            if ($order && $columnsHeaders[abs($order - 1)]) {
+                                var_dump($order);
+                                var_dump($columnsHeaders[abs($order - 1)]);
+                                $columnsHeaders[abs($order - 1)]['multiplier'] *= -1;
+                                var_dump($columnsHeaders[abs($order - 1)]);
+                            };
 
 
                             foreach ($columnsHeaders as $headerIndex => $value) {
 
-                                // $header es el key de cada subarray. si el order param en el url es = al valor absoluto del (header +1)
 
 
-                                //por ejemplo -5/5 = -1
-                                // $value['multiplier'] / abs($value['multiplier']))
-
-
-                                $orderFinal = $value['multiplier'] * ($headerIndex + 1);
+                                $orderToDisplay = $value['multiplier'] * ($order / abs($order))  * ($headerIndex + 1);
 
                             ?>
 
                                 <th>
-                                    <a href="/trabajadores?order=<?php echo $orderFinal . '&' . $queryParams ?>">
+                                    <a href="/trabajadores?order=<?php echo $orderToDisplay . '&' . $queryParams ?>">
                                         <?= $value['display']; ?>
                                     </a>
-                                    <?php if ($order === $orderFinal): ?> <i class="fas fa-sort-amount-down-alt"></i> <?php endif; ?>
+                                    <?php if (abs($order) === abs($orderToDisplay)): ?> <i class="fas fa-sort-amount-down-alt"></i> <?php endif; ?>
                                 </th>
                             <?php
 

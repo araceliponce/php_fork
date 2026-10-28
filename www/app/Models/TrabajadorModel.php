@@ -77,12 +77,13 @@ class TrabajadorModel extends BaseDbModel
             $sql .= " WHERE " . implode(" AND ", $condiciones);
         }
         $sql .= " ORDER BY " . self::ORDER_FIELDS[$this->getOrderIndex($filtros) - 1];
+        var_dump($sql);
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($values);
         return $stmt->fetchAll();
     }
 
-    public function oldgetOrderIndex(array $filtros): int
+    public function getOrderIndex(array $filtros): int
     {
         //si no se envia ningun param order en el url usa default
         if (empty($filtros['order'])) {
@@ -90,33 +91,11 @@ class TrabajadorModel extends BaseDbModel
         } elseif (filter_var($filtros['order'], FILTER_VALIDATE_INT) === false || $filtros['order'] < 1 || $filtros['order'] > count(self::ORDER_FIELDS)) {
             //tambien usa default si no es un int valido, o si esta fuera del rango
             return self::DEFAULT_ORDER_INDEX;
+        } elseif (filter_var($filtros['order'], FILTER_VALIDATE_INT) === false || $filtros['order'] < 1 || $filtros['order'] > count(self::ORDER_FIELDS)) {
+            //tambien usa default si no es un int valido, o si esta fuera del rango
+            return self::DEFAULT_ORDER_INDEX;
         } else {
             return (int)$filtros['order'];
         }
-    }
-
-    public function getOrderIndex(array $filtros): int
-    {
-        // Si no se envía order, usamos el valor por defecto
-        if (empty($filtros['order'])) {
-            return self::DEFAULT_ORDER_INDEX;
-        }
-
-        // Validamos que sea un entero
-        $order = filter_var($filtros['order'], FILTER_VALIDATE_INT);
-
-        if ($order === false) {
-            return self::DEFAULT_ORDER_INDEX;
-        }
-
-        // Convertimos el índice a positivo
-        $order = abs($order);
-
-        // Validamos que esté dentro del rango permitido
-        if ($order === 0 || $order > count(self::ORDER_FIELDS)) {
-            return self::DEFAULT_ORDER_INDEX;
-        }
-
-        return $order;
     }
 }

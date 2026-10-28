@@ -9,7 +9,11 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <!-- input hidden para mantener el valor incluso si despues de hace submit del formulario -->
+                    <!-- inputs hidden para mantener el valor incluso si despues de hace submit del formulario -->
+                    <input type="hidden" name="page" value="<?php echo $page ?? ''; ?>" />
+                    <input type="hidden" name="itemsPerPage" value="<?php echo $itemsPerPage ?? ''; ?>" />
+
+
                     <input type="hidden" name="order" value="<?php echo $order; ?>" />
                     <div class="row">
                         <div class="col-12 col-lg-4">
@@ -93,6 +97,36 @@
             <!-- Card Body -->
             <div class="card-body" id="card_table">
                 <div id="button_container" class="mb-3"></div>
+
+                <nav>
+                    <ul>
+                        <?php
+
+                        $numbers = [];
+
+                        //llena el array de numeros
+                        for ($i = 0; $i < count($trabajadores); $i++) {
+                            $numbers[] = $i;
+                        }
+
+
+
+                        foreach ($numbers as $number) {
+
+
+                        ?>
+                            <li><a href="/trabajadores?page=<?php echo $number . '&itemsPerPage=' . $itemsPerPage  . '&' . $queryParams ?>">
+                                    <?= $number; ?>
+                                </a>
+                            </li>
+
+                        <?php
+
+                        } //fin del foreach columnheaders
+
+                        ?>
+                    </ul>
+                </nav>
                 <!--<form action="./?sec=formulario" method="post">                   -->
                 <table id="tabladatos" class="table table-striped">
                     <thead>

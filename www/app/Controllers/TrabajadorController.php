@@ -48,6 +48,9 @@ class TrabajadorController extends BaseController
         $model = new TrabajadorModel();
         $data['trabajadores'] = $model->getFilterBy($_GET);
         $data['order'] = $model->getOrderIndex($_GET);
+        $data['page'] = $model->getPage($_GET);
+        $data['itemsPerPage'] = $model->getItemsPerPage($_GET);
+
         $auxTrabajadorRolModel = new AuxRolTrabajadorModel();
         $data['roles'] = $auxTrabajadorRolModel->getAll();
         $countriesModel = new AuxCountriesModel();
@@ -60,6 +63,14 @@ class TrabajadorController extends BaseController
         //si existe order lo quita
         unset($getOrder['order']);
         $data['queryParams'] = http_build_query($getOrder);
+
+
+
+        $getPagination = $_GET;
+        unset($getPagination['page']);
+        unset($getPagination['itemsPerPage']);
+        $data['queryParams'] = http_build_query($getPagination);
+
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);
     }
 }

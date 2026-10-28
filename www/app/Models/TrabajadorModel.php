@@ -77,12 +77,15 @@ class TrabajadorModel extends BaseDbModel
         if ($condiciones !== []) {
             $sql .= " WHERE " . implode(" AND ", $condiciones);
         }
-        $sql .= " ORDER BY " . self::ORDER_FIELDS[$this->getOrderIndex($filtros) - 1] . " " . $this->getOrderDireccion($filtros);
-        // var_dump($sql);
+
+        $sql .= " ORDER BY " . self::ORDER_FIELDS[$this->getOrderIndex($filtros) - 1] . " " . $this->getOrderDireccion($filtros) . " LIMIT " . $this->getPage($filtros) . ", " . $this->getItemsPerPage($filtros);
+        var_dump($sql);
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($values);
         return $stmt->fetchAll();
     }
+    //todo: deberia tener otra funcion para obtener sin el limit, o para contar?
+
 
     public function getOrderIndex(array $filtros): int
     {
@@ -107,6 +110,30 @@ class TrabajadorModel extends BaseDbModel
             return 'DESC';
         } else {
             return 'ASC';
+        }
+    }
+
+
+    // LIMIT offset, cantidad;
+    public function getItemsPerPage(array $filtros): int
+    {
+        if (empty($filtros['itemsPerPage']) || filter_var($filtros['itemsPerPage'], FILTER_VALIDATE_INT) === false || $filtros['itemsPerPage'] < 3) {
+            return 3;
+        } else {
+            return (int)$filtros['itemsPerPage'];
+        }
+    }
+
+    //todo: enconntrar la cantidad de paginas, 
+    //por el momento no verifica si coloca un numero superior, igualmente solo retornaria no hay datos de esta query
+    public function getPage(array $filtros): int
+    {
+        if (empty($filtros['page'])) {
+            return 1;
+        } elseif (filter_var($filtros['page'], FILTER_VALIDATE_INT) === false || $filtros['page'] < 1) {
+            return 1;
+        } else {
+            return (int)$filtros['page'];
         }
     }
 }

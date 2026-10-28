@@ -115,32 +115,28 @@
                                     'multiplier' => 1
                                 ],
                                 3 => [
-                                    'display' => 'rol',
+                                    'display' => 'Rol',
                                     'multiplier' => 1
                                 ],
                                 4 => [
-                                    'display' => 'pais',
+                                    'display' => 'Pais',
                                     'multiplier' => 1
                                 ]
                             ];
 
 
 
-                            // si existe un $order en el url, entonces el multiplier de ese column header se cambia
-                            //nota: aqui cada vez que cambie el $order del url, cambiar el valor de ese index del array headercolumns.....................
-
-
+                            // si existe un $order en el url, entonces usar ese numero para buscar dentro del array array[numero de order -1]
+                            //cambiar su multiplier * -1;
                             if ($order && $columnsHeaders[abs($order - 1)]) {
-                                var_dump($order);
-                                var_dump($columnsHeaders[abs($order - 1)]);
+                                // var_dump($order);
+                                // var_dump($columnsHeaders[abs($order - 1)]);
                                 $columnsHeaders[abs($order - 1)]['multiplier'] *= -1;
-                                var_dump($columnsHeaders[abs($order - 1)]);
+                                // var_dump($columnsHeaders[abs($order - 1)]);
                             };
 
 
                             foreach ($columnsHeaders as $headerIndex => $value) {
-
-
 
                                 $orderToDisplay = $value['multiplier'] * ($order / abs($order))  * ($headerIndex + 1);
 

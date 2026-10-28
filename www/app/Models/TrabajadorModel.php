@@ -12,6 +12,8 @@ class TrabajadorModel extends BaseDbModel
 {
     private const array ORDER_FIELDS = ['t.username', 't.salarioBruto', 't.retencionIRPF', 'nombre_rol', 'country_name'];
     private const DEFAULT_ORDER_INDEX = 1;
+    private const DIRECCIONES = ['ASC', 'DESC'];
+
     private const string SELECT_FROM = "SELECT t.*, art.nombre_rol, ac.country_name FROM trabajadores t LEFT JOIN aux_rol_trabajador art ON art.id_rol = t.id_rol LEFT JOIN aux_countries ac ON ac.id = t.id_country";
     public function getTrabajadores(): array
     {
@@ -76,8 +78,8 @@ class TrabajadorModel extends BaseDbModel
         if ($condiciones !== []) {
             $sql .= " WHERE " . implode(" AND ", $condiciones);
         }
-        $sql .= " ORDER BY " . self::ORDER_FIELDS[$this->getOrderIndex($filtros) - 1];
-        var_dump($sql);
+        $sql .= " ORDER BY " . self::ORDER_FIELDS[$this->getOrderIndex($filtros) - 1] . " " . $this->getOrderDireccion($filtros);
+        // var_dump($sql);
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($values);
         return $stmt->fetchAll();
@@ -91,11 +93,21 @@ class TrabajadorModel extends BaseDbModel
         } elseif (filter_var($filtros['order'], FILTER_VALIDATE_INT) === false || $filtros['order'] < 1 || $filtros['order'] > count(self::ORDER_FIELDS)) {
             //tambien usa default si no es un int valido, o si esta fuera del rango
             return self::DEFAULT_ORDER_INDEX;
-        } elseif (filter_var($filtros['order'], FILTER_VALIDATE_INT) === false || $filtros['order'] < 1 || $filtros['order'] > count(self::ORDER_FIELDS)) {
-            //tambien usa default si no es un int valido, o si esta fuera del rango
-            return self::DEFAULT_ORDER_INDEX;
         } else {
             return (int)$filtros['order'];
+        }
+    }
+
+
+    public function getOrderDireccion(array $filtros): string
+    {
+        //si no se envia ningun param order DEVUELVE DIRECCION NADA
+        if (empty($filtros['order']) || filter_var($filtros['order'], FILTER_VALIDATE_INT) === false) {
+            return '';
+        } elseif ($filtros['order'] < 0) {
+            return self::DIRECCIONES[1];
+        } else {
+            return self::DIRECCIONES[0];
         }
     }
 }

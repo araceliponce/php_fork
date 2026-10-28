@@ -12,7 +12,6 @@ class TrabajadorModel extends BaseDbModel
 {
     private const array ORDER_FIELDS = ['t.username', 't.salarioBruto', 't.retencionIRPF', 'nombre_rol', 'country_name'];
     private const DEFAULT_ORDER_INDEX = 1;
-    private const DIRECCIONES = ['ASC', 'DESC'];
 
     private const string SELECT_FROM = "SELECT t.*, art.nombre_rol, ac.country_name FROM trabajadores t LEFT JOIN aux_rol_trabajador art ON art.id_rol = t.id_rol LEFT JOIN aux_countries ac ON ac.id = t.id_country";
     public function getTrabajadores(): array
@@ -101,13 +100,13 @@ class TrabajadorModel extends BaseDbModel
 
     public function getOrderDireccion(array $filtros): string
     {
-        //si no se envia ningun param order DEVUELVE DIRECCION NADA
+        //si no se envia ningun param order o si no es valido devulve ""
         if (empty($filtros['order']) || filter_var($filtros['order'], FILTER_VALIDATE_INT) === false) {
             return '';
         } elseif ($filtros['order'] < 0) {
-            return self::DIRECCIONES[1];
+            return 'DESC';
         } else {
-            return self::DIRECCIONES[0];
+            return 'ASC';
         }
     }
 }

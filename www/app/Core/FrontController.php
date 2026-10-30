@@ -215,6 +215,15 @@ class FrontController
             },
             'get'
         );
+
+        Route::add(
+            '/productos',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\ProductoController();
+                $controlador->getProductos();
+            },
+            'get'
+        );
         Route::pathNotFound(
             function () {
                 $controller = new \Com\Daw2\Controllers\ErroresController();

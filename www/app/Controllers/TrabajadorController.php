@@ -58,22 +58,11 @@ class TrabajadorController extends BaseController
         $input = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $data['input'] = $input;
 
-        //No modificamos la superglobal, la copiamos en $getOrder
-        $getOrder = $_GET;
-        //si existe valor de order anterior al actual, lo quita
-        unset($getOrder['order']);
-        $data['queryParams'] = http_build_query($getOrder);
-
-
-        $getPagination = $_GET;
-        // unset(
-        // $getPagination['order']
-        // $getPagination['page'],
-        // $getPagination['itemsPerPage']
-        // );
-        $data['order'] = $getPagination['order'];
-
-        $data['queryParams'] = http_build_query($getPagination);
+        //No modificamos la superglobal, la copiamos con todos los parámetros actuales
+        $getParams = $_GET;
+        // El controlador no necesita eliminar order
+        // porque los enlaces actualizarán su valor
+        $data['queryParams'] = http_build_query($getParams);
 
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);
     }

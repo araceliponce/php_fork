@@ -34,6 +34,14 @@ class TrabajadorModel extends BaseDbModel
         return $stmt->fetchAll();
     }
 
+    public function getCountFilteredTrabajadores(): array
+    {
+        $sql = self::SELECT_FROM;
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll();
+    }
+
+
     public function getFilterBy(array $filtros): array
     {
         $sql = self::SELECT_FROM;
@@ -78,7 +86,21 @@ class TrabajadorModel extends BaseDbModel
             $sql .= " WHERE " . implode(" AND ", $condiciones);
         }
 
-        $sql .= " ORDER BY " . self::ORDER_FIELDS[$this->getOrderIndex($filtros) - 1] . " " . $this->getOrderDireccion($filtros) . " LIMIT " . $this->getPage($filtros) . ", " . $this->getItemsPerPage($filtros);
+
+        // LIMIT 10 ;;;;;;;clause to show only the top 10 records 
+        // LIMIT indice de inicio, cantidad (por ejemplo si son 10 itemsperpage sera limit 0,10.....limit 10,10......limit 20,10....)
+
+        $order = $this->getOrderIndex($filtros);
+
+        $sql .= " ORDER BY "
+            . self::ORDER_FIELDS[abs($order) - 1]
+            . " "
+            . $this->getOrderDireccion($filtros)
+            . " LIMIT "
+            . $this->getPage($filtros) * $this->getItemsPerPage($filtros)
+            . ", "
+            . $this->getItemsPerPage($filtros);
+
         var_dump($sql);
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($values);
@@ -87,7 +109,7 @@ class TrabajadorModel extends BaseDbModel
     //todo: deberia tener otra funcion para obtener sin el limit, o para contar?
 
 
-    public function getOrderIndex(array $filtros): int
+    public function oldgetOrderIndex(array $filtros): int
     {
         //si no se envia ningun param order en el url usa default
         if (empty($filtros['order'])) {
@@ -101,7 +123,29 @@ class TrabajadorModel extends BaseDbModel
     }
 
 
-    public function getOrderDireccion(array $filtros): string
+    public function getOrderIndex(array $filtros): int
+    {
+        $order = filter_var(
+            $filtros['order'] ?? null,
+            FILTER_VALIDATE_INT
+        );
+
+        // Si order no es un entero válido, usa el valor por defecto
+        if ($order === false) {
+            return self::DEFAULT_ORDER_INDEX;
+        }
+
+        // Comprueba que la columna existe
+        if (abs($order) < 1 || abs($order) > count(self::ORDER_FIELDS)) {
+            return self::DEFAULT_ORDER_INDEX;
+        }
+
+        // Conserva el signo
+        return $order;
+    }
+
+
+    public function oldgetOrderDireccion(array $filtros): string
     {
         //si no se envia ningun param order o si no es valido devulve ""
         if (empty($filtros['order']) || filter_var($filtros['order'], FILTER_VALIDATE_INT) === false) {
@@ -113,6 +157,14 @@ class TrabajadorModel extends BaseDbModel
         }
     }
 
+
+
+    public function getOrderDireccion(array $filtros): string
+    {
+        $order = $this->getOrderIndex($filtros);
+
+        return $order < 0 ? 'DESC' : 'ASC';
+    }
 
     // LIMIT offset, cantidad;
     public function getItemsPerPage(array $filtros): int
@@ -126,14 +178,18 @@ class TrabajadorModel extends BaseDbModel
 
     //todo: enconntrar la cantidad de paginas, 
     //por el momento no verifica si coloca un numero superior, igualmente solo retornaria no hay datos de esta query
+    /**
+     * recibe 1 y retorna 0, recibe 2 y retorna 1....
+     * si no recibe nada retorna default (0)
+     */
     public function getPage(array $filtros): int
     {
         if (empty($filtros['page'])) {
-            return 1;
+            return 0;
         } elseif (filter_var($filtros['page'], FILTER_VALIDATE_INT) === false || $filtros['page'] < 1) {
-            return 1;
+            return 0;
         } else {
-            return (int)$filtros['page'];
+            return (int)$filtros['page'] - 1;
         }
     }
 }

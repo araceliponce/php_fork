@@ -57,18 +57,22 @@ class TrabajadorController extends BaseController
         $data['countries'] = $countriesModel->getAll();
         $input = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $data['input'] = $input;
+
         //No modificamos la superglobal, la copiamos en $getOrder
         $getOrder = $_GET;
-
-        //si existe order lo quita
+        //si existe valor de order anterior al actual, lo quita
         unset($getOrder['order']);
         $data['queryParams'] = http_build_query($getOrder);
 
 
-
         $getPagination = $_GET;
-        unset($getPagination['page']);
-        unset($getPagination['itemsPerPage']);
+        // unset(
+        // $getPagination['order']
+        // $getPagination['page'],
+        // $getPagination['itemsPerPage']
+        // );
+        $data['order'] = $getPagination['order'];
+
         $data['queryParams'] = http_build_query($getPagination);
 
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);

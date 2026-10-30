@@ -10,8 +10,8 @@
                 <!-- Card Body -->
                 <div class="card-body">
                     <!-- inputs hidden para mantener el valor incluso si despues de hace submit del formulario -->
-                    <input type="hidden" name="page" value="<?php echo $page ?? ''; ?>" />
-                    <input type="hidden" name="itemsPerPage" value="<?php echo $itemsPerPage ?? ''; ?>" />
+                    <input type="hidden" name="page" value="<?php echo $page  ?>" />
+                    <input type="hidden" name="itemsPerPage" value="<?php echo $itemsPerPage  ?>" />
 
 
                     <input type="hidden" name="order" value="<?php echo $order; ?>" />
@@ -88,6 +88,9 @@
             </form>
         </div>
     </div>
+
+
+    <pre><?= $queryParams; ?></pre>
     <div class="col-12">
         <div class="card shadow mb-4">
             <div

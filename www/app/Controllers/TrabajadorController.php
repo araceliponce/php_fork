@@ -47,6 +47,8 @@ class TrabajadorController extends BaseController
         $model = new TrabajadorModel();
         $data['trabajadores'] = $model->getFilterBy($_GET);
         $data['order'] = $model->getOrderIndex($_GET);
+        $data['currentPage'] = $model->getCurrentPage($_GET);
+        $data['maxPage'] = $model->getLastPage($_GET);
         $auxTrabajadorRolModel = new AuxRolTrabajadorModel();
         $data['roles'] = $auxTrabajadorRolModel->getAll();
         $countriesModel = new AuxCountriesModel();
@@ -55,8 +57,14 @@ class TrabajadorController extends BaseController
         $data['input'] = $input;
         //No modificamos la superglobal, la copiamos en $getOrder
         $getOrder = $_GET;
+        $data['baseUrl'] = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
         unset($getOrder['order']);
+        unset($getOrder['sentido']);
         $data['queryParams'] = http_build_query($getOrder);
+
+        $getPage = $_GET;
+        unset($getPage['page']);
+        $data['queryParamsPage'] = http_build_query($getPage);
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.view.php', 'templates/footer.view.php'), $data);
     }
 

@@ -68,7 +68,7 @@ class UsuarioSistemaModel extends BaseDbModel
       }
       //le saco las llaves
       $claves = array_keys($roles);
-      //lo exploto
+      //lo imploto
       $condiciones[] = "id_rol IN (" . implode(",", $claves) . ")";
       var_dump($valores);
       //lo transformo

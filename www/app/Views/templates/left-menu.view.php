@@ -13,6 +13,7 @@
 
     <li class="nav-item"> <i class="nav-icon fas fa-th"></i> <a href="/usuarios-sistema">usuarios sistema</a></li>
 
+    <li class="nav-item"> <i class="nav-icon fas fa-th"></i> <a href="/productos">productos</a></li>
 
     <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->

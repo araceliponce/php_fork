@@ -6,10 +6,7 @@ namespace Com\Daw2\Controllers;
 
 use Com\Daw2\Core\BaseController;
 use Com\Daw2\Models\ProductoModel;
-
-// use Com\Daw2\Models\AuxCountriesModel;
-// use Com\Daw2\Models\AuxRolTrabajadorModel;
-// use Com\Daw2\Models\TrabajadorModel;
+use Com\Daw2\Models\ProveedorModel;
 
 class ProductoController extends BaseController
 {
@@ -22,7 +19,27 @@ class ProductoController extends BaseController
       'breadcrumb' => ['Inicio', 'Consultas simples'],
     );
     $model = new ProductoModel();
-    $data['productos'] = $model->getProductos();
+    $modelProveedores = new ProveedorModel();
+
+    $input = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $data['input'] = $input;
+    $data['productos'] = $model->getProductos($_GET);
+    $data['proveedores'] = $modelProveedores->getAll();
+
+
+
+    //pendiente
+    //No modificamos la superglobal, la copiamos en $getOrder
+    $getOrder = $_GET;
+    $data['baseUrl'] = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
+    unset($getOrder['order']);
+    // unset($getOrder['sentido']);
+    $data['queryParams'] = http_build_query($getOrder);
+
+    $getPage = $_GET;
+    unset($getPage['page']);
+    $data['queryParamsPage'] = http_build_query($getPage);
+
     $this->view->showViews(array('templates/header.view.php', 'productos.view.php', 'templates/footer.view.php'), $data);
   }
 }

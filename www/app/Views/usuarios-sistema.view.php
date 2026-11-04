@@ -23,14 +23,12 @@
             <div class="col-12 col-lg-4">
               <div class="form-group">
                 <label for="id_roles[]">Rol:</label>
-                <select name="id_roles[]" id="id_roles[]" class="form-control select2" multiple>
+                <select name="id_roles[]" id="id_roles" class="form-control select2" multiple>
                   <option value="">-</option>
                   <?php foreach ($roles as $rol) {
-
-                    // esta el id_rol dentro de los id_roles seleccionados (o dentro de un [])?
                     $estaDentroDeArray = in_array($rol['id_rol'], $input['id_roles'] ?? []);
                   ?>
-                    <option value="<?= $rol['id_rol'] ?>" <?= isset($input['id_roles']) && $estaDentroDeArray ? 'selected' : ''; ?>>
+                    <option value="<?= $rol['id_rol'] ?>" <?= $estaDentroDeArray ? 'selected' : ''; ?>>
                       <?= ucfirst($rol['nombre_rol']); ?></option>
                   <?php
                   }
@@ -39,6 +37,7 @@
                 <p class="text-error small"><?php echo $errors['id_roles[]'] ?? ''; ?></p>
               </div>
             </div>
+
 
 
 
@@ -53,6 +52,8 @@
     </div>
   </div>
 
+
+
   <style>
     /* https://getbootstrap.com/docs/4.0/components/buttons/ */
     nav ul {
@@ -61,6 +62,7 @@
       gap: .5rem;
       padding-top: 1rem;
     }
+
 
     .btnbtn {
       display: inline-block;

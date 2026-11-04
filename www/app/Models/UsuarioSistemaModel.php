@@ -10,8 +10,7 @@ use PDOException;
 
 class UsuarioSistemaModel extends BaseDbModel
 {
-  // private const  ORDER_FIELDS = ['t.username', 't.salarioBruto', 't.retencionIRPF', 'nombre_rol', 'country_name'];
-  // private const DEFAULT_ORDER_INDEX = 1;
+
 
   private const  SELECT_FROM = "SELECT us.*, us.nombre as username, r.rol as nombre_rol, r.descripcion_en as descripcion_rol_en, r.descripcion_es as descripcion_rol_es FROM usuario_sistema us LEFT JOIN aux_rol r ON r.id_rol = us.id_rol";
 
@@ -56,7 +55,6 @@ class UsuarioSistemaModel extends BaseDbModel
       $valores['username'] = "%" . $filtros['username'] . "%";
     }
 
-    // if ($filtros['roles'] !== []) {
     // seleccion multiple: si no esta vacio y es un array...
     if (!empty($filtros['roles']) && is_array($filtros['roles'])) {
       //relleno un array llaves distintas

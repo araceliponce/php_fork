@@ -28,11 +28,13 @@ class ProductoController extends BaseController
     $data['productos'] = $model->getProductos($_GET);
     $data['proveedores'] = $modelProveedores->getAll();
     $data['supercategorias'] = $modelCategorias->getSuper();
-
     $data['subcategorias'] = $modelCategorias->getSub();
 
 
 
+    $data['order'] = $model->getColumnaOrdenadora($_GET);
+    $data['currentPage'] = $model->getCurrentPage($_GET);
+    $data['maxPage'] = $model->getLastPage($_GET);
 
     //pendiente
     //No modificamos la superglobal, la copiamos en $getOrder

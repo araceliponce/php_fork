@@ -34,6 +34,7 @@
 
 <form method="get" class="row col-12">
   <input type="hidden" name="" value="<?= $input['order'] ?? '' ?>">
+  <input type="hidden" name="" value="<?= $input['currentPage'] ?? '' ?>">
 
 
   <div class="form-group col-6">
@@ -125,7 +126,7 @@
 </form>
 
 <?php
-var_dump($productos);
+// var_dump($productos);
 
 echo (count($productos) == 0); ?>
 
@@ -135,8 +136,8 @@ echo (count($productos) == 0); ?>
     require_once '../app/Helpers/form_helper.php';
     echo printTableHeader(
       ['id', 'codigo', 'nombre', 'coste', 'margen', 'stock', 'iva', 'proveedor'],
-      (int)($input['order'] ?? 1),
-      $queryParams ?? ''
+      $order,
+      $queryParams
     );
     ?>
     <tbody>
@@ -164,9 +165,51 @@ echo (count($productos) == 0); ?>
 
       <?php endif; ?>
     </tbody>
-    <tfoot>
-      <nav>
-        <a href="">pagina sgte</a>
-      </nav>
-    </tfoot>
+
 </table>
+
+
+<nav style="padding-bottom: 3rem;">
+  <!-- si currentpage es 1 a mas, tiene enlace a anterior -->
+
+  <!-- si currentpage es menor que maximo de pages, tiene enlace a siguiente -->
+  <ul class="pagination justify-content-center">
+    <?php
+    if ($currentPage !== 1):
+    ?>
+      <li class="page-item">
+        <a class="page-link" href="<?php echo $baseUrl ?>?page=1 <?php echo ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>" aria-label="First">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">First</span>
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="<?php echo $baseUrl ?>?page=<?php echo ($currentPage - 1) . ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>" aria-label="Previous">
+          <span aria-hidden="true">&lt;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+    <?php
+    endif;
+    ?>
+    <li class="page-item active"><a class="page-link" href="#"><?php echo $currentPage ?></a></li>
+    <?php
+    if ($maxPage > $currentPage):
+    ?>
+      <li class="page-item">
+        <a class="page-link" href="<?php echo $baseUrl ?>?page=<?php echo ($currentPage + 1) . ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>" aria-label="Next">
+          <span aria-hidden="true">&gt;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="<?php echo $baseUrl ?>?page=<?php echo $maxPage . ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>" aria-label="Last">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Last</span>
+        </a>
+      </li>
+    <?php
+    endif;
+    ?>
+  </ul>
+</nav>

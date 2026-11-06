@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 if (!function_exists('printTableHeader')) {
 
+
+  /**
+   * @param array $cabeceras array con los nombres de las cabeceras
+   * @param int $currentOrder campo por el que se está ordenando el listado actualmente
+   * @param string $queryParams parámetros get de filtrado
+   * @param string|null $baseUrl url relativa del enlace. Si es vacía se asume la current_url
+   * @return string thead completo para una tabla
+   */
   function printTableHeader(
     array $cabeceras,
     int $currentOrder = 1,

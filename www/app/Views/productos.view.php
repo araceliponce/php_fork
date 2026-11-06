@@ -103,6 +103,7 @@
     <label for="max_coste">max coste:</label>
     <input name="max_coste" type="text" value="<?= $input['max_coste'] ?? '' ?>">
   </div>
+
   <div class="form-group col-4">
     <label for="proveedores">proveedores:</label>
     <select name="proveedores[]" id="proveedores" class="form-control select2" multiple>
@@ -123,6 +124,10 @@
   </div>
 </form>
 
+<?php
+var_dump($productos);
+
+echo (count($productos) == 0); ?>
 
 <table id="tabladatos" class="table table-striped">
   <tr>
@@ -135,23 +140,33 @@
     );
     ?>
     <tbody>
-      <?php
-      foreach ($productos as $item) {
-      ?>
-        <tr class="">
-          <td><?php echo $item['id_producto'] ?></td>
-          <td><?php echo $item['codigo'] ?></td>
-          <td><?php echo $item['nombre'] ?></td>
-          <td><?php echo $item['coste'] ?></td>
-          <td><?php echo $item['margen'] ?></td>
-          <td><?php echo $item['stock'] ?></td>
-          <td><?php echo $item['iva'] ?>%</td>
-          <td><?php echo $item['proveedor_nombre'] ?></td>
-
-
+      <?php if (empty($productos)): ?>
+        <tr>
+          <td colspan="8" style="text-align: center;">no se encontro</td>
         </tr>
-      <?php
-      }
-      ?>
+
+      <?php else: ?>
+
+        <?php
+        foreach ($productos as $item) :
+        ?>
+          <tr class="">
+            <td><?php echo $item['id_producto'] ?></td>
+            <td><?php echo $item['codigo'] ?></td>
+            <td><?php echo $item['nombre'] ?></td>
+            <td><?php echo $item['coste'] ?></td>
+            <td><?php echo $item['margen'] ?></td>
+            <td><?php echo $item['stock'] ?></td>
+            <td><?php echo $item['iva'] ?>%</td>
+            <td><?php echo $item['proveedor_nombre'] ?></td>
+          </tr>
+        <?php endforeach; ?>
+
+      <?php endif; ?>
     </tbody>
+    <tfoot>
+      <nav>
+        <a href="">pagina sgte</a>
+      </nav>
+    </tfoot>
 </table>

@@ -16,6 +16,8 @@ class ProductoModel extends BaseDbModel
   private const DEFAULT_ORDER_INDEX = 1;
 
   // IMPORTANTE: proveedor_cif es un alias, no una columna real de la tabla proveedor. LLAMALO POR SU NOMBRE EN EL WHERE y en order_fields (el alias es solo par alos tds de la tabla????)
+  // https://dev.mysql.com/doc/refman/9.7/en/problems-with-alias.html 
+  // You can use the alias in GROUP BY, ORDER BY, or HAVING clauses to refer to the column. standard SQL disallows references to column aliases in a WHERE clause. 
   private const  SELECT_FROM = "SELECT 
   p.*, prov.cif as proveedor_cif, 
   prov.nombre as proveedor_nombre, 

@@ -1,5 +1,5 @@
 <?php
-var_dump($input);
+// var_dump($input);
 // array (size=10)
 //       'id_producto' => int 11
 //       'codigo' => string 'ACE0000189' (length=10)
@@ -25,22 +25,85 @@ var_dump($input);
 
 ?>
 
+<style>
+  .form-group {
+    display: grid;
+    align-content: start;
+  }
+</style>
 
-
-<form method="get">
+<form method="get" class="row col-12">
   <input type="hidden" name="" value="<?= $input['order'] ?? '' ?>">
 
 
-  <div class="form-group">
+  <div class="form-group col-6">
     <label for="nombre">nombre de producto:</label>
     <input name="nombre" type="text" value="<?= $input['nombre'] ?? '' ?>">
   </div>
-  <div class="form-group">
+  <div class="form-group col-6">
     <label for="codigo">codigo de producto:</label>
     <input name="codigo" type="text" value="<?= $input['codigo'] ?? '' ?>">
   </div>
-  <div class="form-group">
 
+  <div class="form-group col-6">
+
+    <!-- <select id="select2" data-placeholder="Select an option" tabindex="-1" aria-hidden="true"> -->
+    <!-- necesito colocar a losq ue no tienen id_padre como el label del optgroup 
+     
+    <optgroup label="CATEGORIA">
+    <option value="ID_SUBCATEGORIA">SUBCATEGORIA</option>
+    <option value="ID_SUBCATEGORIA">SUBCATEGORIA</option>
+  </optgroup>
+  <option value="D_SUBCATEGORIA">SUBACTEGORIA_SINPADRE</option>
+      
+      
+      -->
+
+
+    <?php
+
+    // var_dump($supercategorias);
+    // var_dump($_GET);
+
+    ?>
+    <label for="categorias">escoge categorias:</label>
+    <select name="categorias[]" id="" multiple class="select2">
+      <option value="">--</option>
+      <?php foreach ($supercategorias as $super) {
+      ?>
+        <optgroup label="<?= $super['supercategoria_nombre'] ?>">
+          <!-- <option value="x">equis</option> -->
+          <?php foreach ($subcategorias as $sub) {
+
+            $pertenece = $sub['subcategoria_padre'] === $super['supercategoria_id'];
+            $estaDentroDeArray = in_array($sub['subcategoria_id'], $input['categorias'] ?? []);
+
+            if ($pertenece) {
+          ?>
+              <option value="<?= $sub['subcategoria_id'] ?>" <?= $estaDentroDeArray ? 'selected' : ''; ?>>
+                <?= ucfirst($sub['subcategoria_nombre']); ?>
+              </option>
+          <?php }
+          } ?>
+        </optgroup>
+      <?php } ?>
+    </select>
+
+  </div>
+
+
+
+
+
+  <div class="form-group col-4">
+    <label for="min_coste">min coste:</label>
+    <input name="min_coste" type="text" value="<?= $input['min_coste'] ?? '' ?>">
+  </div>
+  <div class="form-group col-4">
+    <label for="max_coste">max coste:</label>
+    <input name="max_coste" type="text" value="<?= $input['max_coste'] ?? '' ?>">
+  </div>
+  <div class="form-group col-4">
     <label for="proveedores">proveedores:</label>
     <select name="proveedores[]" id="proveedores" class="form-control select2" multiple>
       <option value="">-</option>
@@ -55,7 +118,9 @@ var_dump($input);
     <p class="text-error small"><?php echo $errors['proveedores[]'] ?? ''; ?></p>
   </div>
 
-  <input type="submit" value="enviar">
+  <div class="row col-12">
+    <input type="submit" value="enviar">
+  </div>
 </form>
 
 
@@ -64,7 +129,7 @@ var_dump($input);
     <?php
     require_once '../app/Helpers/form_helper.php';
     echo printTableHeader(
-      ['p.id_producto', 'p.codigo', 'p.nombre', 'p.coste', 'p.margen', 'p.stock', 'p.iva', 'p.proveedor_nombre'],
+      ['id', 'codigo', 'nombre', 'coste', 'margen', 'stock', 'iva', 'proveedor'],
       (int)($input['order'] ?? 1),
       $queryParams ?? ''
     );

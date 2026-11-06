@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Com\Daw2\Controllers;
 
 use Com\Daw2\Core\BaseController;
+use Com\Daw2\Models\CategoriaModel;
 use Com\Daw2\Models\ProductoModel;
 use Com\Daw2\Models\ProveedorModel;
 
@@ -20,11 +21,16 @@ class ProductoController extends BaseController
     );
     $model = new ProductoModel();
     $modelProveedores = new ProveedorModel();
+    $modelCategorias = new CategoriaModel();
 
     $input = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $data['input'] = $input;
     $data['productos'] = $model->getProductos($_GET);
     $data['proveedores'] = $modelProveedores->getAll();
+    $data['supercategorias'] = $modelCategorias->getSuper();
+
+    $data['subcategorias'] = $modelCategorias->getSub();
+
 
 
 

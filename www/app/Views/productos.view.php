@@ -170,46 +170,34 @@ echo (count($productos) == 0); ?>
 
 
 <nav style="padding-bottom: 3rem;">
-  <!-- si currentpage es 1 a mas, tiene enlace a anterior -->
+  <?php
+  queryParams = queryParamsPage !== '' ? "&queryParamsPage" : '';
 
-  <!-- si currentpage es menor que maximo de pages, tiene enlace a siguiente -->
+  firstPage = "baseUrl?page=1queryParams";
+  prevPage  = "baseUrl?page=" . (currentPage - 1) . queryParams;
+  nextPage  = "baseUrl?page=" . (currentPage + 1) . queryParams;
+  lastPage  = "baseUrl?page=maxPagequeryParams";
+  ?>
+
   <ul class="pagination justify-content-center">
-    <?php
-    if ($currentPage !== 1):
-    ?>
+    <?php if (currentPage !== 1): ?>
       <li class="page-item">
-        <a class="page-link" href="<?php echo $baseUrl ?>?page=1 <?php echo ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>" aria-label="First">
-          <span aria-hidden="true">&laquo;</span>
-          <span class="sr-only">First</span>
-        </a>
+        <a class="page-link" href="<?= firstPage ?>" aria-label="First">&laquo;</a>
       </li>
       <li class="page-item">
-        <a class="page-link" href="<?php echo $baseUrl ?>?page=<?php echo ($currentPage - 1) . ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>" aria-label="Previous">
-          <span aria-hidden="true">&lt;</span>
-          <span class="sr-only">Previous</span>
-        </a>
+        <a class="page-link" href="<?= prevPage ?>" aria-label="Previous">&lt;</a>
       </li>
-    <?php
-    endif;
-    ?>
-    <li class="page-item active"><a class="page-link" href="#"><?php echo $currentPage ?></a></li>
-    <?php
-    if ($maxPage > $currentPage):
-    ?>
+    <?php endif; ?>
+    <li class="page-item active">
+      <a class="page-link" href="#"><?php echo currentPage ?></a>
+    </li>
+    <?php if (currentPage < maxPage): ?>
       <li class="page-item">
-        <a class="page-link" href="<?php echo $baseUrl ?>?page=<?php echo ($currentPage + 1) . ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>" aria-label="Next">
-          <span aria-hidden="true">&gt;</span>
-          <span class="sr-only">Next</span>
-        </a>
+        <a class="page-link" href="<?= nextPage ?>" aria-label="Next">&gt;</a>
       </li>
       <li class="page-item">
-        <a class="page-link" href="<?php echo $baseUrl ?>?page=<?php echo $maxPage . ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>" aria-label="Last">
-          <span aria-hidden="true">&raquo;</span>
-          <span class="sr-only">Last</span>
-        </a>
+        <a class="page-link" href="<?= lastPage ?>" aria-label="Last">&raquo;</a>
       </li>
-    <?php
-    endif;
-    ?>
+    <?php endif; ?>
   </ul>
 </nav>

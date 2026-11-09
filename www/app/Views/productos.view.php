@@ -1,4 +1,8 @@
 <?php
+
+require_once '../app/Helpers/form_helper.php';
+require_once '../app/Helpers/for_tables.php';
+
 // var_dump($input);
 // array (size=10)
 //       'id_producto' => int 11
@@ -124,79 +128,87 @@
     <input type="submit" value="enviar">
   </div>
 </form>
-
 <?php
-// var_dump($productos);
 
-echo (count($productos) == 0); ?>
+// echo $queryParams;
+// echo "<br>";
+// echo $queryParamsPage;
+
+
+?>
+
+
 
 <table id="tabladatos" class="table table-striped">
-  <tr>
-    <?php
-    require_once '../app/Helpers/form_helper.php';
-    echo printTableHeader(
-      ['id', 'codigo', 'nombre', 'coste', 'margen', 'stock', 'iva', 'proveedor'],
-      $order,
-      $queryParams
-    );
-    ?>
-    <tbody>
-      <?php if (empty($productos)): ?>
-        <tr>
-          <td colspan="8" style="text-align: center;">no se encontro</td>
+  <?php
+  // echo printTableHeader(
+  //   ['id', 'codigo', 'nombre', 'coste', 'margen', 'stock', 'iva', 'proveedor'],
+  //   $order,
+  //   $queryParams
+  // );
+  echo creaTablaHeader(
+    ['id', 'codigo', 'nombre', 'coste', 'margen', 'stock', 'iva', 'proveedor'],
+    $order,
+    $queryParams
+  );
+  ?>
+  <tbody>
+    <?php if (empty($productos)): ?>
+      <tr>
+        <td colspan="8" style="text-align: center;">no se encontro</td>
+      </tr>
+
+    <?php else: ?>
+
+      <?php
+      foreach ($productos as $item) :
+      ?>
+        <tr class="">
+          <td><?php echo $item['id_producto'] ?></td>
+          <td><?php echo $item['codigo'] ?></td>
+          <td><?php echo $item['nombre'] ?></td>
+          <td><?php echo $item['coste'] ?></td>
+          <td><?php echo $item['margen'] ?></td>
+          <td><?php echo $item['stock'] ?></td>
+          <td><?php echo $item['iva'] ?>%</td>
+          <td><?php echo $item['proveedor_nombre'] ?></td>
         </tr>
+      <?php endforeach; ?>
 
-      <?php else: ?>
-
-        <?php
-        foreach ($productos as $item) :
-        ?>
-          <tr class="">
-            <td><?php echo $item['id_producto'] ?></td>
-            <td><?php echo $item['codigo'] ?></td>
-            <td><?php echo $item['nombre'] ?></td>
-            <td><?php echo $item['coste'] ?></td>
-            <td><?php echo $item['margen'] ?></td>
-            <td><?php echo $item['stock'] ?></td>
-            <td><?php echo $item['iva'] ?>%</td>
-            <td><?php echo $item['proveedor_nombre'] ?></td>
-          </tr>
-        <?php endforeach; ?>
-
-      <?php endif; ?>
-    </tbody>
+    <?php endif; ?>
+  </tbody>
 
 </table>
 
 
 <nav style="padding-bottom: 3rem;">
   <?php
-  queryParams = queryParamsPage !== '' ? "&queryParamsPage" : '';
+  $queryParams = $queryParamsPage !== '' ? "&$queryParamsPage" : '';
 
-  firstPage = "baseUrl?page=1queryParams";
-  prevPage  = "baseUrl?page=" . (currentPage - 1) . queryParams;
-  nextPage  = "baseUrl?page=" . (currentPage + 1) . queryParams;
-  lastPage  = "baseUrl?page=maxPagequeryParams";
+  $firstPage = "$baseUrl?page=1$queryParams";
+  $prevPage  = "$baseUrl?page=" . ($currentPage - 1) . $queryParams;
+  $nextPage  = "$baseUrl?page=" . ($currentPage + 1) . $queryParams;
+  $lastPage  = "$baseUrl?page=$maxPage$queryParams";
   ?>
 
   <ul class="pagination justify-content-center">
-    <?php if (currentPage !== 1): ?>
+    <?php if ($currentPage !== 1): ?>
       <li class="page-item">
-        <a class="page-link" href="<?= firstPage ?>" aria-label="First">&laquo;</a>
+        <a class="page-link" href="<?= $firstPage ?>" aria-label="First">&laquo;</a>
       </li>
       <li class="page-item">
-        <a class="page-link" href="<?= prevPage ?>" aria-label="Previous">&lt;</a>
+        <a class="page-link" href="<?= $prevPage ?>" aria-label="Previous">&lt;</a>
       </li>
     <?php endif; ?>
     <li class="page-item active">
-      <a class="page-link" href="#"><?php echo currentPage ?></a>
+      <a class="page-link" href="#"><?php echo $currentPage ?></a>
     </li>
-    <?php if (currentPage < maxPage): ?>
+    <?php if ($currentPage < $maxPage): ?>
       <li class="page-item">
-        <a class="page-link" href="<?= nextPage ?>" aria-label="Next">&gt;</a>
+        <a class="page-link" href="<?= $nextPage ?>" aria-label="Next">&gt;</a>
       </li>
       <li class="page-item">
-        <a class="page-link" href="<?= lastPage ?>" aria-label="Last">&raquo;</a>
+        <a class="page-link" href="<?= $lastPage ?>" aria-label="Last">&raquo;</a>
       </li>
     <?php endif; ?>
   </ul>

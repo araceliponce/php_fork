@@ -215,6 +215,14 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/trabajadores/new',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\TrabajadorNewController();
+                $controlador->demo();
+            },
+            'get'
+        );
 
         Route::add(
             '/productos',

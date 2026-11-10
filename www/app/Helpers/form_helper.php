@@ -22,6 +22,8 @@ if (!function_exists('printTableHeader')) {
     $result = '<thead><tr>';
 
 
+
+
     // en http://localhost/plantas?categoria=2&page=3
     // $_SERVER['REQUEST_URI'] es /plantas?categoria=2&page=3
 

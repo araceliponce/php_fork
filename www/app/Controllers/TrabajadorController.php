@@ -47,6 +47,8 @@ class TrabajadorController extends BaseController
         );
         $model = new TrabajadorModel();
         $data['trabajadores'] = $model->getFilterBy($_GET);
+        $data['columnsToDisplay'] = $model->getColumnsToDisplay();
+
         $data['order'] = $model->getOrderIndex($_GET);
         $data['page'] = $model->getPage($_GET);
         $data['itemsPerPage'] = $model->getItemsPerPage($_GET);

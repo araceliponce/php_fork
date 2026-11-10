@@ -8,12 +8,41 @@ use Com\Daw2\Core\BaseDbModel;
 use PDO;
 use PDOException;
 
+
+
+// username Primaria 	varchar(50) 	utf8mb4_0900_ai_ci 		No 	Ninguna 			Cambiar Cambiar 	Eliminar Eliminar 	
+// 2 	salarioBruto 	decimal(10,2) 			No 	Ninguna 			Cambiar Cambiar 	Eliminar Eliminar 	
+// 3 	retencionIRPF 	decimal(10,2) 			No 	Ninguna 			Cambiar Cambiar 	Eliminar Eliminar 	
+// 4 	activo 	tinyint(1) 			No 	0 			Cambiar Cambiar 	Eliminar Eliminar 	
+// 5 	id_rol Índice 	int 			No 	1 			Cambiar Cambiar 	Eliminar Eliminar 	
+// 6 	id_country 	int 
+
 class TrabajadorModel extends BaseDbModel
 {
     private const array ORDER_FIELDS = ['t.username', 't.salarioBruto', 't.retencionIRPF', 'nombre_rol', 'country_name'];
+    private const array COLUMNS_TO_DISPLAY = ['username', 'salarioBruto', 'retencionIRPF', 'rol', 'country', 'acciones'];
+
     private const DEFAULT_ORDER_INDEX = 1;
 
     private const string SELECT_FROM = "SELECT t.*, art.nombre_rol, ac.country_name FROM trabajadores t LEFT JOIN aux_rol_trabajador art ON art.id_rol = t.id_rol LEFT JOIN aux_countries ac ON ac.id = t.id_country";
+
+
+
+
+
+    private const INSERT = "
+    INSERT INTO `trabajadores`
+    (`username`, `salarioBruto`, `retencionIRPF`, `activo`, `id_rol`, `id_country`)
+    VALUES
+    (:username, :salarioBruto, :retencionIRPF, :activo, :id_rol, :id_country)
+";
+
+    public function getColumnsToDisplay(): array
+    {
+
+        return self::COLUMNS_TO_DISPLAY;
+    }
+
     public function getTrabajadores(): array
     {
         $trabajadores = $this->pdo->query('SELECT * FROM trabajadores')->fetchAll();
@@ -33,6 +62,109 @@ class TrabajadorModel extends BaseDbModel
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
     }
+
+    // NUEVO TRABAJADOR
+    // $input['activo'] === 'on' ? 1 : 0 puede provocar un warning si activo no existe en $input.
+    public function create(array $input): bool|array
+    {
+
+
+
+        $errores = $this->validateInput($input);
+        if (!empty($errores)) {
+
+            // recarga la pagina, muestra mensajes de rror?
+
+            return $errores;
+        } else {
+
+
+            //crea
+            $sql = self::INSERT;
+
+            $valores = [
+                ':username' => trim($input['username']),
+                ':salarioBruto' => $input['salarioBruto'],
+                ':retencionIRPF' => $input['retencionIRPF'],
+                ':activo' => isset($input['activo']) ? 1 : 0,
+                ':id_rol' => $input['id_rol'],
+                ':id_country' => $input['id_country'],
+            ];
+
+
+
+
+            $stmt = $this->pdo->prepare($sql);
+
+            return $stmt->execute($valores);;
+        }
+    }
+
+    public function validateInput(array $input): array
+    {
+
+
+        $errores = [];
+
+        //solo existe en esta funcion, no importa si repite el nombre no cambia el valor del original
+        $username = trim($input['username'] ?? '');
+
+
+        if (mb_strlen($username) < 2 || mb_strlen($username) > 50) {
+            $errores['username'] = 'necesita tener entre 2 y 50 characteres';
+        }
+
+        $salarioBruto = $input['salarioBruto'] ?? ''; //si input de salariobruto se quedo vacio se vuelve ''
+        // esta el campo vacio, o no es numero, o es menor o igual que 500
+        if ($salarioBruto = '' || is_numeric($salarioBruto) || $salarioBruto <= 500) {
+            $errores['salarioBruto'] = 'dejaste vacio o es menor o igual que 500';
+        }
+
+
+
+        //irpf si esta vacio, si no es numero y si es menor o mayor a un limite maximo?
+
+        //id rol poddria revisar que es alguno de los ids validos de rolModel.php
+
+        //no revisa el valor checkbox. si existe (comprueba con isset) entonces tiene attr checked, y si no existe no tiene el attr
+
+        $retencionIRPF = $input['retencionIRPF'] ?? ''; //si input de salariobruto se quedo vacio se vuelve ''
+
+        if (
+            $retencionIRPF === '' ||
+            !is_numeric($retencionIRPF) ||
+            $retencionIRPF < 0 ||
+            $retencionIRPF > 100
+        ) {
+            $errores['retencionIRPF'] = 'Introduce una retención entre 0 y 100';
+        }
+
+        // ID ROL
+        $idRol = $input['id_rol'] ?? '';
+
+        if (filter_var($idRol, FILTER_VALIDATE_INT) === false || $idRol < 1) {
+            $errores['id_rol'] = 'Selecciona un rol válido';
+        }
+
+        // ID COUNTRY
+        $idCountry = $input['id_country'] ?? '';
+
+        if (filter_var($idCountry, FILTER_VALIDATE_INT) === false || $idCountry < 1) {
+            $errores['id_country'] = 'Selecciona un país válido';
+        }
+
+
+
+
+        return $errores;
+    }
+
+
+
+
+
+
+
 
     public function getCountFilteredTrabajadores(): array
     {
@@ -75,7 +207,7 @@ class TrabajadorModel extends BaseDbModel
             $countries = [];
             $i = 1;
             foreach ($filtros['id_country'] as $idCountry) {
-                $countries[":id_country{$i}"] = $idCountry;
+                $countries[":id_country_{$i}"] = $idCountry;
                 $i++;
             }
             $claves = array_keys($countries);

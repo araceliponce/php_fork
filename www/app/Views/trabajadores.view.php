@@ -108,112 +108,56 @@
             </div>
             <!-- Card Body -->
             <div class="card-body" id="card_table">
-                <div id="button_container" class="mb-3"></div>
+                <div id="button_container" class="mb-3">
+                    <?php
+                    $newLink = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') . '/new/';
+                    ?>
+                    <a href="<?= $newLink ?>">Nuevo usuario</a>
+                </div>
 
                 <table id="tabladatos" class="table table-striped">
                     <thead>
                         <tr>
                             <?php
 
+                            require_once '../app/Helpers/form_helper.php';
 
+                            echo printTableHeader($columnsToDisplay, $order);
+                            // http://localhost:8080/trabajadores?page=0&itemsPerPage=3&order=4&username=&id_rol=&min_salarioBruto=&max_salarioBruto=&min_retencionIRPF=&max_retencionIRPF=&id_country%5B%5D=2&enviar=Aplicar+filtros
 
-
-                            $columnsHeaders = [
-                                0 => [
-                                    'display' => 'Username',
-                                    'multiplier' => 1
-                                ],
-                                1 => [
-                                    'display' => 'Salario Bruto',
-                                    'multiplier' => 1
-                                ],
-                                2 => [
-                                    'display' => 'Retención',
-                                    'multiplier' => 1
-                                ],
-                                3 => [
-                                    'display' => 'Rol',
-                                    'multiplier' => 1
-                                ],
-                                4 => [
-                                    'display' => 'Pais',
-                                    'multiplier' => 1
-                                ]
-                            ];
-
-                            $currentOrder = $order;
-
-                            // si existe un $order en el url, entonces usar ese numero para buscar dentro del array array[numero de order -1]
-                            //cambiar su multiplier * -1;
-                            // if ($order && $columnsHeaders[abs($order - 1)]) {
-                            //     // var_dump($order);
-                            //     // var_dump($columnsHeaders[abs($order - 1)]);
-                            //     $columnsHeaders[abs($order - 1)]['multiplier'] *= -1;
-                            //     // var_dump($columnsHeaders[abs($order - 1)]);
-                            // };
-
-
-                            // foreach ($columnsHeaders as $headerIndex => $value) {
-                            //     //cosa rara que no recuerdo.
-                            //     $orderToDisplay = $value['multiplier'] * ($order / abs($order))  * ($headerIndex + 1);
-
-
-                            // http://localhost:8080/trabajadores?itemsPerPage=3&order=-4&username=carlos&id_rol=&min_salarioBruto=&max_salarioBruto=&min_retencionIRPF=&max_retencionIRPF=&enviar=Aplicar+filtros
-
-                            foreach ($columnsHeaders as $headerIndex => $value) {
-
-                                $columnOrder = $headerIndex + 1;
-
-                                // Si selecciona la columna actual, cambia ASC/DESC
-                                if (abs($currentOrder) === $columnOrder) {
-
-                                    $orderToDisplay = $currentOrder * -1;
-                                } else {
-
-                                    // Si selecciona otra columna, empieza en ASC
-                                    $orderToDisplay = $columnOrder;
-                                }
-
-                                // Copia los parámetros actuales
-                                $params = $_GET;
-
-                                // Actualiza order: sustituye el anterior si existe
-                                $params['order'] = $orderToDisplay;
-
-
-                                // Al cambiar de columna, vuelve a la primera página
-                                // unset($params['page']);
-
-
-                                // Genera la query string
-                                $queryParams = http_build_query($params);
-                            ?>
-
-                                <th>
-                                    <a href="/trabajadores?<?= $queryParams ?>">
-                                        <?= $value['display']; ?>
-                                    </a>
-                                    <?php if (abs($currentOrder) === $columnOrder): ?>
-                                        <i class="fas fa-sort-amount-<?= $order < 0 ? 'down' : 'up' ?>-alt"></i>
-                                    <?php endif; ?>
-                                </th>
-                            <?php
-
-                            } //fin del foreach columnheaders
 
                             ?>
                         </tr>
                     </thead>
+
                     <tbody>
                         <?php
                         foreach ($trabajadores as $trabajador) {
+
+                            $editLink = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') . '/edit/' . $trabajador['username'];
+                            $deleteLink = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') . '/delete/' . $trabajador['username'];
+
                         ?>
+
+
                             <tr class="<?php echo $trabajador['activo'] ? '' : 'table-danger'; ?>">
                                 <td><?php echo $trabajador['username'] ?></td>
                                 <td><?php echo $trabajador['salarioBruto'] ?></td>
                                 <td><?php echo $trabajador['retencionIRPF'] ?>%</td>
                                 <td><?php echo $trabajador['nombre_rol'] ?></td>
                                 <td><?php echo $trabajador['country_name'] ?></td>
+                                <td>
+                                    <a class="btnbtn" href="<?= $editLink ?>">
+
+                                        <span class="sr-only">editar</span>
+                                        <i class="fas fa-marker"></i>
+                                    </a>
+                                    <a class="btnbtn" href="<?= $deleteLink ?>">
+                                        <span class="sr-only">borrar</span>
+                                        <i class="fas fa-backspace"></i>
+                                    </a>
+
+                                </td>
                             </tr>
                         <?php
                         }

@@ -145,7 +145,7 @@
                   <a class="btnbtn" href="mailto:<?= $usuario['email'] ?>">
                     <i class="fab fa-telegram-plane"></i>
                     <span class="sr-only">escribir email</span>
-                    </button>
+                  </a>
                 </td>
               </tr>
             <?php

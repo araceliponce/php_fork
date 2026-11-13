@@ -63,101 +63,6 @@ class TrabajadorModel extends BaseDbModel
         return $stmt->fetchAll();
     }
 
-    // NUEVO TRABAJADOR
-    // $input['activo'] === 'on' ? 1 : 0 puede provocar un warning si activo no existe en $input.
-    public function create(array $input): bool|array
-    {
-
-
-
-        $errores = $this->validateInput($input);
-        if (!empty($errores)) {
-
-            // recarga la pagina, muestra mensajes de rror?
-
-            return $errores;
-        } else {
-
-
-            //crea
-            $sql = self::INSERT;
-
-            $valores = [
-                ':username' => trim($input['username']),
-                ':salarioBruto' => $input['salarioBruto'],
-                ':retencionIRPF' => $input['retencionIRPF'],
-                ':activo' => isset($input['activo']) ? 1 : 0,
-                ':id_rol' => $input['id_rol'],
-                ':id_country' => $input['id_country'],
-            ];
-
-
-
-
-            $stmt = $this->pdo->prepare($sql);
-
-            return $stmt->execute($valores);;
-        }
-    }
-
-    public function validateInput(array $input): array
-    {
-
-
-        $errores = [];
-
-        //solo existe en esta funcion, no importa si repite el nombre no cambia el valor del original
-        $username = trim($input['username'] ?? '');
-
-
-        if (mb_strlen($username) < 2 || mb_strlen($username) > 50) {
-            $errores['username'] = 'necesita tener entre 2 y 50 characteres';
-        }
-
-        $salarioBruto = $input['salarioBruto'] ?? ''; //si input de salariobruto se quedo vacio se vuelve ''
-        // esta el campo vacio, o no es numero, o es menor o igual que 500
-        if ($salarioBruto = '' || is_numeric($salarioBruto) || $salarioBruto <= 500) {
-            $errores['salarioBruto'] = 'dejaste vacio o es menor o igual que 500';
-        }
-
-
-
-        //irpf si esta vacio, si no es numero y si es menor o mayor a un limite maximo?
-
-        //id rol poddria revisar que es alguno de los ids validos de rolModel.php
-
-        //no revisa el valor checkbox. si existe (comprueba con isset) entonces tiene attr checked, y si no existe no tiene el attr
-
-        $retencionIRPF = $input['retencionIRPF'] ?? ''; //si input de salariobruto se quedo vacio se vuelve ''
-
-        if (
-            $retencionIRPF === '' ||
-            !is_numeric($retencionIRPF) ||
-            $retencionIRPF < 0 ||
-            $retencionIRPF > 100
-        ) {
-            $errores['retencionIRPF'] = 'Introduce una retención entre 0 y 100';
-        }
-
-        // ID ROL
-        $idRol = $input['id_rol'] ?? '';
-
-        if (filter_var($idRol, FILTER_VALIDATE_INT) === false || $idRol < 1) {
-            $errores['id_rol'] = 'Selecciona un rol válido';
-        }
-
-        // ID COUNTRY
-        $idCountry = $input['id_country'] ?? '';
-
-        if (filter_var($idCountry, FILTER_VALIDATE_INT) === false || $idCountry < 1) {
-            $errores['id_country'] = 'Selecciona un país válido';
-        }
-
-
-
-
-        return $errores;
-    }
 
 
 
@@ -323,5 +228,125 @@ class TrabajadorModel extends BaseDbModel
         } else {
             return (int)$filtros['page'] - 1;
         }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // NUEVO TRABAJADOR -----------------------------------------------------------------------
+    // $input['activo'] === 'on' ? 1 : 0 puede provocar un warning si activo no existe en $input.
+    public function create(array $input): bool|array
+    {
+        $errores = $this->validateInput($input);
+        if (!empty($errores)) {
+
+            // recarga la pagina, muestra mensajes de rror?
+            var_dump($errores);
+            return $errores;
+        } else {
+
+
+            //crea
+            $sql = self::INSERT;
+
+            $valores = [
+                ':username' => trim($input['username']),
+                ':salarioBruto' => $input['salarioBruto'],
+                ':retencionIRPF' => $input['retencionIRPF'],
+                ':activo' => isset($input['activo']) ? 1 : 0,
+                ':id_rol' => $input['id_rol'],
+                ':id_country' => $input['id_country'],
+            ];
+
+            $stmt = $this->pdo->prepare($sql);
+
+            return $stmt->execute($valores);;
+        }
+    }
+
+    public function validateInput(array $input): array
+    {
+        $errores = [];
+
+        //solo existe en esta funcion, no importa si repite el nombre no cambia el valor del original
+        $username = trim($input['username'] ?? '');
+
+        $regexUsername = '/^[a-zA-Z0-9_]+$/'; //esta bien, no uses {} porque hace que no funcione
+
+        // La expresión regular '/^[a-zA-Z0-9_]+$/' verifica que:
+        // ^      : Inicio de la cadena
+        // a-zA-Z : Letras de la A a la Z (mayúsculas y minúsculas)
+        // 0-9    : Números del 0 al 9
+        // _      : Guion bajo
+        // +      : Uno o más caracteres
+        // $      : Fin de la cadena
+        // var_dump($username);
+        // var_dump(bin2hex($username));
+        // var_dump(preg_match('/^[a-zA-Z0-9_]+$/', 'anuevoddd')); //1 significa pasó prueba
+
+
+        if ($username === '') {
+            $errores['username'] = 'El username es obligatorio.';
+        } else {
+            if (mb_strlen($username) < 2 || mb_strlen($username) > 50) {
+                $errores['username'] = 'Necesita tener entre 2 y 50 caracteres.';
+            }
+            if (!preg_match($regexUsername, $username)) {
+                $errores['username'] = 'Solo se permiten letras, números y guiones bajos.';
+            }
+        }
+
+
+
+        $salarioBruto = trim($input['salarioBruto'] ?? ''); //si input de salariobruto se quedo vacio se vuelve ''
+        var_dump($salarioBruto);
+
+        // esta el campo vacio, o no es numero, o es menor o igual que 500
+        if ($salarioBruto === '' || !is_numeric($salarioBruto) || (float)$salarioBruto <= 500) {
+            $errores['salarioBruto'] = 'dejaste vacio o es menor o igual que 500';
+        }
+
+
+        $retencionIRPF = trim($input['retencionIRPF'] ?? ''); //si input de salariobruto se quedo vacio se vuelve ''
+
+
+        if (
+            $retencionIRPF === '' ||
+            !is_numeric($retencionIRPF) ||
+            (float) $retencionIRPF < 0 ||
+            (float) $retencionIRPF > 100
+        ) {
+            $errores['retencionIRPF'] = 'Introduce una retención entre 0 y 100';
+        }
+
+        // ID ROL
+        $idRol = $input['id_rol'] ?? '';
+
+        if (filter_var($idRol, FILTER_VALIDATE_INT) === false || $idRol < 1) {
+            $errores['id_rol'] = 'Selecciona un rol válido';
+        }
+
+        // ID COUNTRY
+        $idCountry = $input['id_country'] ?? '';
+
+        if (filter_var($idCountry, FILTER_VALIDATE_INT) === false || $idCountry < 1) {
+            $errores['id_country'] = 'Selecciona un país válido';
+        }
+
+
+
+
+        return $errores;
     }
 }

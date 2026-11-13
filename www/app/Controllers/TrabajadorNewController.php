@@ -11,6 +11,8 @@ use Com\Daw2\Models\TrabajadorModel;
 
 class TrabajadorNewController extends BaseController
 {
+
+
     public function demo()
     {
 
@@ -19,11 +21,19 @@ class TrabajadorNewController extends BaseController
             'breadcrumb' => ['Inicio', 'new'],
         );
         $model = new TrabajadorModel();
+        $modelCountries = new AuxCountriesModel();
+        $modelRoles = new AuxRolTrabajadorModel();
+
+
         $data['trabajador'] = $model->create($_GET);
+        $data['countries'] = $modelCountries->getAll();
+        $data['roles'] = $modelRoles->getAll();
 
         //filtervar array sanitize
         $data['input'] = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $data['errores'] = $model->validateInput($_GET);
+        $errores = $model->validateInput($_GET);
+        $data['errores'] = $errores;
+
 
         $this->view->showViews(array('templates/header.view.php', 'trabajadores-new.view.php', 'templates/footer.view.php'), $data);
     }

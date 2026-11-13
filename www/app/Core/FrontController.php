@@ -224,6 +224,8 @@ class FrontController
             'get'
         );
 
+
+
         Route::add(
             '/productos',
             function () {

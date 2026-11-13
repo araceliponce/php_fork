@@ -8,6 +8,6 @@ readonly class SQLConditions
 {
   public function __construct(
     public string $whereSQL,
-    public array $values
+    public array $valores
   ) {}
 }

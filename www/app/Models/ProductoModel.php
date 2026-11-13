@@ -65,7 +65,7 @@ class ProductoModel extends BaseDbModel
     $sql .= " LIMIT " . (($currentPage - 1) * self::ROWS_PER_PAGE) . ", " . self::ROWS_PER_PAGE;
 
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($sqlConditions->values);
+    $stmt->execute($sqlConditions->valores);
     return $stmt->fetchAll();
   }
 
@@ -151,7 +151,7 @@ class ProductoModel extends BaseDbModel
     $sqlConditions = $this->generateWhereByFilter($filtros);
     $sql .= $sqlConditions->whereSQL;
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($sqlConditions->values);
+    $stmt->execute($sqlConditions->valores);
     return $stmt->fetchColumn(0);
   }
 

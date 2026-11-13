@@ -1,5 +1,5 @@
 <?php
-
+require_once '../app/Helpers/for_tables.php'
 ?>
 
 
@@ -12,6 +12,8 @@
           <h6 class="m-0 font-weight-bold text-primary">Filtros</h6>
         </div>
         <div>
+
+          <input type="hidden" name="order" value="<?= $currentOrder ?? '' ?>">
 
           <div class="row">
             <div class="col-12 col-lg-4">
@@ -89,49 +91,19 @@
 
 
         <table id="tabladatos" class="table table-striped">
-          <thead>
-            <tr>
-              <?php
-
-
-
-
-              $currentOrder = 1;
-              $order = 1;
-
-              // var_dump($columnasNames);
-              foreach ($columnasNames as $index => $value) {
-
-              ?>
-
-                <th>
-
-
-                  <a href="/usuarios-sistema">
-
-                    <?= $value; ?>
-                    <?php if (abs($currentOrder) === $index): ?>
-                      <i class="fas fa-sort-amount-<?= $order < 0 ? 'down' : 'up' ?>-alt"></i>
-                    <?php endif; ?>
-                  </a>
-
-                </th>
-              <?php
-
-              } //fin del foreach columnheaders
-
-              ?>
-            </tr>
-          </thead>
+          <?php echo renderTableHead($columnsNames, $currentOrder, $queryParams) ?>
           <tbody>
             <?php
             foreach ($usuarios as $usuario) {
             ?>
               <tr class="<?php echo $usuario['baja'] ? 'table-danger' : ''; ?>">
-                <td><?= $usuario['id_usuario'] ?></td>
+
+                <td><?= $usuario['nombre'] ?></td>
+                <td><?= $usuario['nombre_rol'] ?></td>
                 <td><?= $usuario['email'] ?></td>
-                <td><?= $usuario['username'] ?></td>
                 <td><?= $usuario['last_date'] ?></td>
+                <td><?= $usuario['idioma'] ?></td>
+
                 <td>
                   <button class="btnbtn">
                     <!-- editar -->

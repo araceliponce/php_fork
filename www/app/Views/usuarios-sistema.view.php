@@ -15,36 +15,37 @@ require_once '../app/Helpers/for_tables.php'
 
           <input type="hidden" name="order" value="<?= $currentOrder ?? '' ?>">
 
-          <div class="row">
-            <div class="col-12 col-lg-4">
-              <div class="mb-3">
-                <label for="username">Nombre:</label>
-                <input type="text" class="form-control" name="username" id="username" value="<?php echo $input['username'] ?? ''; ?>" />
-              </div>
-            </div>
-            <div class="col-12 col-lg-4">
-              <div class="form-group">
-                <label for="id_roles[]">Rol:</label>
-                <select name="id_roles[]" id="id_roles" class="form-control select2" multiple>
-                  <option value="">-</option>
-                  <?php foreach ($roles as $rol) {
-                    $estaDentroDeArray = in_array($rol['id_rol'], $input['id_roles'] ?? []);
-                  ?>
-                    <option value="<?= $rol['id_rol'] ?>" <?= $estaDentroDeArray ? 'selected' : ''; ?>>
-                      <?= ucfirst($rol['nombre_rol']); ?></option>
-                  <?php
-                  }
-                  ?>
-                </select>
-                <p class="text-error small"><?php echo $errors['id_roles[]'] ?? ''; ?></p>
-              </div>
-            </div>
 
 
 
-
+          <div class="form-group">
+            <label for="username">username:</label>
+            <input class="form-control" name="username" id="username" type="text" minlength="2" value="<?= $input['username'] ?? '' ?>">
+            <?php if (isset($_GET['username']) && !empty($errores['username'])): ?>
+              <p class="text-danger mt-2"> <?= $errores['username'] ?> </p>
+            <?php endif; ?>
           </div>
+
+
+          <div class="form-group">
+            <label for="id_roles">Rol:</label>
+            <select name="id_roles[]" id="id_roles" class="form-control select2" multiple>
+              <option value="">-</option>
+              <?php foreach ($roles as $rol) {
+                $estaDentroDeArray = in_array($rol['id_rol'], $input['id_roles'] ?? []);
+              ?>
+                <option value="<?= $rol['id_rol'] ?>" <?= $estaDentroDeArray ? 'selected' : ''; ?>>
+                  <?= ucfirst($rol['nombre_rol']); ?>
+                </option>
+              <?php } ?>
+            </select>
+            <?php if (isset($_GET['id_roles']) && !empty($errores['id_roles'])): ?>
+              <p class="text-danger mt-2"> <?= $errores['id_roles'] ?> </p>
+            <?php endif; ?>
+          </div>
+
         </div>
+
         <div class="col-12 text-right">
           <a href="<?php echo strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?>" value="" class="btn btn-danger">Reiniciar filtros</a>
           <input type="submit" value="Aplicar filtros" name="enviar" class="btn btn-primary ml-2" />
@@ -82,9 +83,8 @@ require_once '../app/Helpers/for_tables.php'
     <div class="card shadow mb-4">
 
       <h6 class="m-0 font-weight-bold text-primary">usuarios</h6>
-      <!-- <?= var_dump($usuarios) ?> -->
 
-
+      <a href="usuarios-sistema/new">crear nuevo</a>
 
 
       <div class="card-body" id="card_table">

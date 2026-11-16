@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Com\Daw2\Models;
 
+use Com\Daw2\Controllers\UsuarioSistemaController;
 use Com\Daw2\Core\BaseDbModel;
 use Com\Daw2\Libraries\SQLConditions;
 use PDO;
@@ -163,5 +164,28 @@ class UsuarioSistemaModel extends BaseDbModel
   }
 
 
-  /////////////////////////////
+  /////////////////////////////crear nuevo usuario
+
+  public function doNew()
+  {
+
+    $data = array(
+      'titulo' => 'new usuario sistema ',
+      'breadcrumb' => ['Inicio', 'new usuario sistema'],
+    );
+    $model = new UsuarioSistemaController();
+    $modelRoles = new AuxRolTrabajadorModel();
+
+
+    $data['usuarios'] = $model->getUsuarios($_GET);
+    $data['roles'] = $modelRoles->getAll();
+
+    //filtervar array sanitize
+    $data['input'] = filter_var_array($_GET, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    // $errores = $model->validateInput($_GET);
+    // $data['errores'] = $errores;
+
+
+    $this->view->showViews(array('templates/header.view.php', 'usuarios-sistema-new.view.php', 'templates/footer.view.php'), $data);
+  }
 }

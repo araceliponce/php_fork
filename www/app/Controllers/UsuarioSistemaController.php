@@ -38,7 +38,6 @@ class UsuarioSistemaController extends BaseController
 
     $getOrder = $_GET;
     unset($getOrder['order']);
-    // unset($getOrder['sentido']);
     unset($getOrder['page']);
     $getPage = $_GET;
     unset($getPage['page']);

@@ -215,6 +215,31 @@ class FrontController
             },
             'get'
         );
+        Route::add(
+            '/trabajadores/new',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\TrabajadorController();
+                $controlador->new();
+            },
+            'get'
+        );
+        Route::add(
+            '/trabajadores/new',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\TrabajadorController();
+                $controlador->doNew();
+            },
+            'post'
+        );
+
+        Route::add(
+            '/usuarios-sistema',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\UsuariosSistemaController();
+                $controlador->index();
+            },
+            'get'
+        );
         Route::pathNotFound(
             function () {
                 $controller = new \Com\Daw2\Controllers\ErroresController();

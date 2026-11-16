@@ -101,7 +101,14 @@
         <div class="card shadow mb-4">
             <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Trabajadores</h6>
+                <div class="col-6">
+                    <h6 class="m-0 font-weight-bold text-primary">Trabajadores</h6>
+                </div>
+                <div class="col-6">
+                    <div class="m-0 font-weight-bold justify-content-end">
+                        <a href="/trabajadores/new" class="btn btn-primary ml-1 float-right"><i class="fas fa-plus-circle"></i> Nuevo Trabajador</a>
+                    </div>
+                </div>
             </div>
             <!-- Card Body -->
             <div class="card-body" id="card_table">
@@ -112,24 +119,32 @@
                         <?php
                         require_once '../app/Helpers/form_helper.php';
                         echo printTableHeader(
-                            ['Username', 'Salario Bruto', 'Retención', 'Rol', 'País'],
-                            $order,
-                            $input['sentido'] ?? null,
-                            $queryParams
+                                ['Username', 'Salario Bruto', 'Retención', 'Rol', 'País'],
+                                $order,
+                                $input['sentido'] ?? null,
+                                $queryParams
                         );
                         ?>
-                    <tbody>
-                    <?php
-                    foreach ($trabajadores as $trabajador) {
-                        ?>
-                        <tr class="<?php echo $trabajador['activo'] ? '' : 'table-danger'; ?>">
-                            <td><?php echo $trabajador['username'] ?></td>
-                            <td><?php echo $trabajador['salarioBruto'] ?></td>
-                            <td><?php echo $trabajador['retencionIRPF'] ?>%</td>
-                            <td><?php echo $trabajador['nombre_rol'] ?></td>
-                            <td><?php echo $trabajador['country_name'] ?></td>
-                        </tr>
+                        <tbody>
                         <?php
+                        foreach ($trabajadores
+
+                        as $trabajador) {
+                        ?>
+                    <tr class="<?php echo $trabajador['activo'] ? '' : 'table-danger'; ?>">
+                        <td><?php echo $trabajador['username'] ?></td>
+                        <td><?php echo $trabajador['salarioBruto'] ?></td>
+                        <td><?php echo $trabajador['retencionIRPF'] ?>%</td>
+                        <td><?php echo $trabajador['nombre_rol'] ?></td>
+                        <td><?php echo $trabajador['country_name'] ?></td>
+                        <td>
+                            <a href="trabajadores/edit/<?php echo $trabajador['username'] ?>"
+                               class="btn btn-success ml-2"><i class="fas fa-edit"></i></a>
+                            <a href="trabajadores/delete/<?php echo $trabajador['username'] ?>"
+                               class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    <?php
                     }
                     ?>
                     </tbody>
@@ -140,38 +155,46 @@
                     <ul class="pagination justify-content-center">
                         <?php
                         if ($currentPage !== 1):
-                        ?>
-                        <li class="page-item">
-                            <a class="page-link" href="<?php echo $baseUrl ?>?page=1 <?php echo ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>" aria-label="First">
-                                <span aria-hidden="true">&laquo;</span>
-                                <span class="sr-only">First</span>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="<?php echo $baseUrl ?>?page=<?php echo ($currentPage - 1) . ($queryParamsPage !== '' ? "&$queryParamsPage" : '')?>" aria-label="Previous">
-                                <span aria-hidden="true">&lt;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
+                            ?>
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="<?php echo $baseUrl ?>?page=1 <?php echo($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>"
+                                   aria-label="First">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span class="sr-only">First</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="<?php echo $baseUrl ?>?page=<?php echo ($currentPage - 1) . ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&lt;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
                         <?php
                         endif;
                         ?>
                         <li class="page-item active"><a class="page-link" href="#"><?php echo $currentPage ?></a></li>
                         <?php
                         if ($maxPage > $currentPage):
-                        ?>
-                        <li class="page-item">
-                            <a class="page-link" href="<?php echo $baseUrl ?>?page=<?php echo ($currentPage + 1) . ($queryParamsPage !== '' ? "&$queryParamsPage" : '')?>" aria-label="Next">
-                                <span aria-hidden="true">&gt;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="<?php echo $baseUrl ?>?page=<?php echo $maxPage . ($queryParamsPage !== '' ? "&$queryParamsPage" : '')?>" aria-label="Last">
-                                <span aria-hidden="true">&raquo;</span>
-                                <span class="sr-only">Last</span>
-                            </a>
-                        </li>
+                            ?>
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="<?php echo $baseUrl ?>?page=<?php echo ($currentPage + 1) . ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>"
+                                   aria-label="Next">
+                                    <span aria-hidden="true">&gt;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link"
+                                   href="<?php echo $baseUrl ?>?page=<?php echo $maxPage . ($queryParamsPage !== '' ? "&$queryParamsPage" : '') ?>"
+                                   aria-label="Last">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Last</span>
+                                </a>
+                            </li>
                         <?php
                         endif;
                         ?>

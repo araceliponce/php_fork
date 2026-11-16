@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Com\Daw2\Controllers;
@@ -86,7 +87,9 @@ class TrabajadorController extends BaseController
 
     public function doNew(): void
     {
-        $errores = $this->checkTrabajadorForm($_POST);
+        $errorespt1 = $this->checkTrabajadorForm($_POST);
+        $errorespt2 = empty($errorespt1['username']) ? $this->checkUsernameAlreadyExists($_POST) : [];
+        $errores = array_merge($errorespt1, $errorespt2);
         if ($errores !== []) {
             $this->new(
                 filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
@@ -164,4 +167,68 @@ class TrabajadorController extends BaseController
         return $errores;
     }
 
+
+
+    private function checkUsernameAlreadyExists(array $datos): array
+    {
+        $errores = [];
+
+        $trabajadorModel = new TrabajadorModel();
+        $trabajador = $trabajadorModel->find($datos['username']);
+        if ($trabajador !== false) {
+            $errores['username'] = 'nombre de usuario en uso';
+        }
+
+        return $errores;
+    }
+
+
+    public function edit(array $input = [], array $errores = []): void
+    {
+        $data = array(
+            'titulo' => 'edicion trabajador',
+            'breadcrumb' => ['Inicio', 'Trabajadores', 'edicion'],
+            'input' => $input,
+            'errors' => $errores,
+        );
+        $model = new TrabajadorModel();
+
+        // var_dump($_SERVER['REQUEST_URI']); ///trabajadores/AAAAAA/edit
+        // Source - https://stackoverflow.com/a/72727781  the last bit
+        $urlUsername = array_reverse(explode('/', $_SERVER['REQUEST_URI']))[0];
+        $data['input'] = $model->find($urlUsername);
+        //como admin si puedo editar los datos de cualquiera, pero en caso d usuario regular deberia checkar si es us propio username
+        $data['input']['username'] = $urlUsername;
+
+
+        $auxTrabajadorRolModel = new AuxRolTrabajadorModel();
+        $data['roles'] = $auxTrabajadorRolModel->getAll();
+        $countriesModel = new AuxCountriesModel();
+        $data['countries'] = $countriesModel->getAll();
+        $this->view->showViews(array('templates/header.view.php', 'trabajadores.edit.php', 'templates/footer.view.php'), $data);
+    }
+
+    public function doEdit(): void
+    {
+        $errores = $this->checkTrabajadorForm($_POST);
+        if ($errores !== []) {
+            $this->new(
+                filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+                $errores
+            );
+        } else {
+            $trabajadoresModel = new TrabajadorModel();
+            $res = $trabajadoresModel->update($_POST);
+            if ($res !== true) {
+                echo 'Error';
+            } else {
+                if (!isset($_POST['insertar_otro'])) {
+                    header('Location: /trabajadores');
+                } else {
+                    // header('Location: /trabajadores/new');
+                    // header("Refresh: 0");
+                }
+            }
+        }
+    }
 }

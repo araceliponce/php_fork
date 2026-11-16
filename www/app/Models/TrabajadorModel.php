@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Com\Daw2\Models;
@@ -17,6 +18,8 @@ class TrabajadorModel extends BaseDbModel
     private const SELECT_COUNT = "SELECT COUNT(*) as total";
     private const string FROM = " FROM trabajadores t LEFT JOIN aux_rol_trabajador art ON art.id_rol = t.id_rol LEFT JOIN aux_countries ac ON ac.id = t.id_country";
     private array $allowedFields = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country'];
+    private array $allowedUpdateFields = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country'];
+
     public function getTrabajadores(): array
     {
         $trabajadores = $this->pdo->query('SELECT * FROM trabajadores')->fetchAll();
@@ -66,7 +69,8 @@ class TrabajadorModel extends BaseDbModel
         return $stmt->fetchColumn(0);
     }
 
-    private function generateWhereByFilter(array $filtros): SQLConditions {
+    private function generateWhereByFilter(array $filtros): SQLConditions
+    {
         $condiciones = [];
         $values = [];
         if (!empty($filtros['username'])) {
@@ -96,7 +100,7 @@ class TrabajadorModel extends BaseDbModel
         if (!empty($filtros['id_country']) && is_array($filtros['id_country'])) {
             $countries = [];
             $i = 1;
-            foreach($filtros['id_country'] as $idCountry) {
+            foreach ($filtros['id_country'] as $idCountry) {
                 $countries[":id_country{$i}"] = $idCountry;
                 $i++;
             }
@@ -105,7 +109,7 @@ class TrabajadorModel extends BaseDbModel
             $values = array_merge($values, $countries);
         }
         if ($condiciones !== []) {
-           return new SQLConditions(" WHERE " . implode(" AND ", $condiciones), $values);
+            return new SQLConditions(" WHERE " . implode(" AND ", $condiciones), $values);
         } else {
             return new SQLConditions("", []);
         }
@@ -148,5 +152,21 @@ class TrabajadorModel extends BaseDbModel
         $insertData['activo'] = !empty($datos['activo']) ? 1 : 0;
         $stmt = $this->pdo->prepare($sql);
         return ($stmt->execute($insertData) && $stmt->rowCount() === 1);
+    }
+
+    public function update(array $datos): bool
+    {
+
+        $sql = "UPDATE trabajadores 
+            SET salarioBruto=:salarioBruto, 
+            retencionIRPF=:retencionIRPF, 
+            activo=:activo, id_rol=:id_rol, 
+            id_country=:id_country 
+            WHERE username=:username";
+        var_dump($sql);
+        $updateData = array_filter($datos, fn($key) => in_array($key, $this->allowedFields), ARRAY_FILTER_USE_KEY);
+        $updateData['activo'] = !empty($datos['activo']) ? 1 : 0;
+        $stmt = $this->pdo->prepare($sql);
+        return ($stmt->execute($updateData));
     }
 }

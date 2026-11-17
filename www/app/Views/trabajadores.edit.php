@@ -3,8 +3,9 @@
 declare(strict_types=1);
 
 // var_dump($urlUsername);
-
+echo "aqui input";
 var_dump($input);
+
 
 
 $onEditPage = str_contains($_SERVER['REQUEST_URI'], "/edit/");
@@ -15,13 +16,7 @@ $onEditPage = str_contains($_SERVER['REQUEST_URI'], "/edit/");
             class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary"><?php echo $titulo ?></h6>
         </div>
-        <!-- Card Body 
-         
-        php if ($onEditPage) {
-                                echo "disabled";
-                            } 
-                            
-                            -->
+
         <div class="card-body">
             <div class="row">
                 <div class="col-12 col-lg-4">
@@ -32,7 +27,9 @@ $onEditPage = str_contains($_SERVER['REQUEST_URI'], "/edit/");
                             value="<?php
                                     echo $input['username'] ?? ''; ?>"
                             maxlength="50"
-                            placeholder="MyUsername" />
+                            placeholder="MyUsername"
+
+                            <?= $onEditPage ?? 'readonly' ?> />
 
                         <?php if ($onEditPage === false) :
                         ?>
@@ -130,8 +127,18 @@ $onEditPage = str_contains($_SERVER['REQUEST_URI'], "/edit/");
         <div class="card-footer">
             <div class="col-12 text-right">
                 <a href="/trabajadores" class="btn btn-danger">Cancelar</a>
-                <input type="submit" value="Guardar" class="btn btn-primary ml-2" />
-                <input type="submit" name="insertar_otro" value="Guardar e insertar otro" class="btn btn-primary ml-2" />
+
+
+
+
+                <?php if ($onEditPage === true) :
+                ?>
+                    <input type="submit" name="guardar_cambios" value="Guardar cambios" class="btn btn-primary ml-2" />
+
+                <? else: ?>
+                    <input type="submit" value="Guardar" class="btn btn-primary ml-2" />
+                    <input type="submit" name="insertar_otro" value="Guardar e insertar otro" class="btn btn-primary ml-2" />
+                <? endif; ?>
             </div>
         </div>
     </form>

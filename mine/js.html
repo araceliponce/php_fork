@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+
+  <script>
+    function truthCheck(collection, pre) {
+
+      let counter = 0
+      let abc = collection
+      collection.forEach(element => {
+        // console.log(element[pre])
+        if (element[pre]) {
+          console.log(element[pre])
+
+          counter++;
+        }
+      });
+
+      return counter == abc.length
+
+    }
+
+    // truthCheck([{ name: "Quincy", role: "Founder", isBot: false }, { name: "Naomi", role: "", isBot: false }, { name: "Camperbot", role: "Bot", isBot: true }], "isBot"); //should false
+
+    truthCheck([{ name: "Quincy", role: "Founder", isBot: false }, { name: "Naomi", role: "", isBot: false }, { name: "Camperbot", role: "Bot", isBot: true }], "name") //should return true
+  </script>
+</body>
+
+</html>

@@ -87,9 +87,15 @@ class TrabajadorController extends BaseController
 
     public function doNew(): void
     {
-        $errorespt1 = $this->checkTrabajadorForm($_POST);
-        $errorespt2 = empty($errorespt1['username']) ? $this->checkUsernameAlreadyExists($_POST) : [];
-        $errores = array_merge($errorespt1, $errorespt2);
+        $errores = array_merge(
+            $this->checkTrabajadorForm($_POST),
+            $this->checkUsername($_POST)
+        );
+        if (
+            !isset($errores['username']) && $this->checkUsernameAlreadyExists($_POST) !== []
+        ) {
+            $errores['username'] = 'Nombre de usuario en uso';
+        }
         if ($errores !== []) {
             $this->new(
                 filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
@@ -113,18 +119,7 @@ class TrabajadorController extends BaseController
     private function checkTrabajadorForm(array $datos): array
     {
         $errores = [];
-        if (empty($datos['username'])) {
-            $errores['username'] = 'Campo obligatorio';
-        } elseif (!preg_match('/^[\p{L}0-9_]{4,50}$/', $datos['username'])) {
-            $errores['username'] = 'Username solo acepta caracteres alfanuméricos y _. Longitud mínima: 4, máxima: 50';
-        } else {
-            $trabajadorModel = new TrabajadorModel();
-            $trabajador = $trabajadorModel->find($datos['username']);
-            if ($trabajador !== false) {
-                $errores['username'] = 'El nombre de usuario ya está en uso';
-            }
-        }
-
+        //para que sea reusable, separo la validacion del username 
         if (empty($datos['salarioBruto'])) {
             $errores['salarioBruto'] = 'Campo obligatorio';
         } elseif (!is_numeric($datos['salarioBruto'])) {
@@ -167,7 +162,18 @@ class TrabajadorController extends BaseController
         return $errores;
     }
 
+    private function checkUsername(array $datos): array
+    {
+        $errores = [];
 
+        if (empty($datos['username'])) {
+            $errores['username'] = 'Campo obligatorio';
+        } elseif (!preg_match('/^[\p{L}0-9_]{4,50}$/', $datos['username'])) {
+            $errores['username'] = 'Username no válido';
+        }
+
+        return $errores;
+    }
 
     private function checkUsernameAlreadyExists(array $datos): array
     {
@@ -188,7 +194,6 @@ class TrabajadorController extends BaseController
         $data = array(
             'titulo' => 'edicion trabajador',
             'breadcrumb' => ['Inicio', 'Trabajadores', 'edicion'],
-            'input' => $input,
             'errors' => $errores,
         );
         $model = new TrabajadorModel();
@@ -208,26 +213,25 @@ class TrabajadorController extends BaseController
         $this->view->showViews(array('templates/header.view.php', 'trabajadores.edit.php', 'templates/footer.view.php'), $data);
     }
 
+
+
+
     public function doEdit(): void
     {
         $errores = $this->checkTrabajadorForm($_POST);
         if ($errores !== []) {
-            $this->new(
+            //esta llamando a public funtion de auqi
+            $this->edit(
                 filter_var_array($_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS),
                 $errores
             );
         } else {
             $trabajadoresModel = new TrabajadorModel();
             $res = $trabajadoresModel->update($_POST);
-            if ($res !== true) {
-                echo 'Error';
+            if (!$res) {
+                echo 'Error al actualizar el trabajador';
             } else {
-                if (!isset($_POST['insertar_otro'])) {
-                    header('Location: /trabajadores');
-                } else {
-                    // header('Location: /trabajadores/new');
-                    // header("Refresh: 0");
-                }
+                header('Location: /trabajadores');
             }
         }
     }

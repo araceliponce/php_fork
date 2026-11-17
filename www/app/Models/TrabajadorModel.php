@@ -17,13 +17,11 @@ class TrabajadorModel extends BaseDbModel
     private const SELECT = "SELECT t.*, art.nombre_rol, ac.country_name";
     private const SELECT_COUNT = "SELECT COUNT(*) as total";
     private const string FROM = " FROM trabajadores t LEFT JOIN aux_rol_trabajador art ON art.id_rol = t.id_rol LEFT JOIN aux_countries ac ON ac.id = t.id_country";
-    private array $allowedFields = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country'];
-    private array $allowedUpdateFields = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country'];
+    private array $allowedFields = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country']; //profesor no incluyó .activo
 
     public function getTrabajadores(): array
     {
         $trabajadores = $this->pdo->query('SELECT * FROM trabajadores')->fetchAll();
-        var_dump($trabajadores);
         return $trabajadores;
     }
     public function getAllTrabajadores(): array
@@ -150,6 +148,7 @@ class TrabajadorModel extends BaseDbModel
                 values (:username, :salarioBruto, :retencionIRPF, :activo, :id_rol, :id_country)";
         $insertData = array_filter($datos, fn($key) => in_array($key, $this->allowedFields), ARRAY_FILTER_USE_KEY);
         $insertData['activo'] = !empty($datos['activo']) ? 1 : 0;
+        var_dump($insertData);
         $stmt = $this->pdo->prepare($sql);
         return ($stmt->execute($insertData) && $stmt->rowCount() === 1);
     }
@@ -160,12 +159,16 @@ class TrabajadorModel extends BaseDbModel
         $sql = "UPDATE trabajadores 
             SET salarioBruto=:salarioBruto, 
             retencionIRPF=:retencionIRPF, 
-            activo=:activo, id_rol=:id_rol, 
+            activo=:activo, 
+            id_rol=:id_rol, 
             id_country=:id_country 
             WHERE username=:username";
-        var_dump($sql);
+
+        // Si algun item del array $datos no está incluido en $this->allowedFields, no se enviará como parámetro a PDO.
         $updateData = array_filter($datos, fn($key) => in_array($key, $this->allowedFields), ARRAY_FILTER_USE_KEY);
+        $updateData['username'] = $datos['username']; //???????????????????
         $updateData['activo'] = !empty($datos['activo']) ? 1 : 0;
+
         $stmt = $this->pdo->prepare($sql);
         return ($stmt->execute($updateData));
     }

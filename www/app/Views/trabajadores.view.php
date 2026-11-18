@@ -122,19 +122,26 @@
                 <div id="button_container" class="mb-3"></div>
                 <!--<form action="./?sec=formulario" method="post">                   -->
                 <table id="tabladatos" class="table table-striped">
-                    <tr>
+
+                    <?php
+                    require_once '../app/Helpers/form_helper.php';
+                    echo printTableHeader(
+                        ['Username', 'Salario Bruto', 'Retención', 'Rol', 'País'],
+                        $order,
+                        // $input['sentido'] ?? null,
+                        $queryParams
+                    );
+                    ?>
+                    <tbody>
                         <?php
-                        require_once '../app/Helpers/form_helper.php';
-                        echo printTableHeader(
-                            ['Username', 'Salario Bruto', 'Retención', 'Rol', 'País'],
-                            $order,
-                            // $input['sentido'] ?? null,
-                            $queryParams
-                        );
-                        ?>
-                        <tbody>
-                            <?php
-                            foreach (
+
+                        if (count($trabajadores) === 0): ?>
+
+                            <tr>
+                                <td colspan="5">No se encontraron</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach (
                                 $trabajadores
 
                                 as $trabajador
@@ -156,7 +163,10 @@
                             <?php
                             }
                             ?>
-                        </tbody>
+
+                        <?php endif; ?>
+
+                    </tbody>
                 </table>
             </div>
             <div class="card-footer">

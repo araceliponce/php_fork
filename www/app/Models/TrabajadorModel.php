@@ -19,11 +19,7 @@ class TrabajadorModel extends BaseDbModel
     private const string FROM = " FROM trabajadores t LEFT JOIN aux_rol_trabajador art ON art.id_rol = t.id_rol LEFT JOIN aux_countries ac ON ac.id = t.id_country";
     private array $allowedFields = ['username', 'salarioBruto', 'retencionIRPF', 'activo', 'id_rol', 'id_country']; //profesor no incluyó .activo
 
-    public function getTrabajadores(): array
-    {
-        $trabajadores = $this->pdo->query('SELECT * FROM trabajadores')->fetchAll();
-        return $trabajadores;
-    }
+
     public function getAllTrabajadores(): array
     {
         $sql = self::SELECT . self::FROM;

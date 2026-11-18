@@ -216,6 +216,14 @@ class FrontController
             'get'
         );
         Route::add(
+            '/trabajadores-repaso',
+            function () {
+                $controlador = new \Com\Daw2\Controllers\TrabajadorControllerREPASO();
+                $controlador->getTrabajadores();
+            },
+            'get'
+        );
+        Route::add(
             '/trabajadores/new',
             function () {
                 $controlador = new \Com\Daw2\Controllers\TrabajadorController();

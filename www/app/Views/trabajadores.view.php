@@ -9,7 +9,9 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <input type="hidden" name="order" value="<?php echo $order; ?>" />
+                    <input type="hidden" name="order" value="<?php echo $order ?? '' ?>" />
+                    <input type="hidden" name="page" value="<?php echo $page ?? '' ?>" />
+
                     <div class="row">
                         <div class="col-12 col-lg-4">
                             <div class="mb-3">
@@ -21,11 +23,12 @@
                         <div class="col-12 col-lg-4">
                             <div class="form-group">
                                 <label for="id_rol">Rol:</label>
+                                <!-- <pre><?= var_dump($roles) ?></pre> -->
                                 <select name="id_rol" id="id_rol" class="form-control select2">
                                     <option value="">-</option>
                                     <?php foreach ($roles as $rol) {
                                     ?>
-                                        <option value="<?php echo $rol['id_rol'] ?>" <?php echo (isset($input['id_rol']) && $rol['id_rol'] == $input['id_rol']) ? 'selected' : ''; ?>><?php echo ucfirst($rol['nombre_rol']); ?></option>
+                                        <option value="<?php echo $rol['id_rol'] ?>" <?php echo (isset($input['id_rol']) && $rol['id_rol'] == $input['id_rol']) ? 'selected' : ''; ?>><?php echo ucfirst($rol['rol']); ?></option>
                                     <?php
                                     }
                                     ?>
@@ -97,12 +100,16 @@
             </form>
         </div>
     </div>
+
+    <!-- http://localhost:8080/trabajadores-repaso?order=1&page=&username=aaa&id_rol=&min_salarioBruto=&max_salarioBruto=&min_retencionIRPF=&max_retencionIRPF=&enviar=Aplicar+filtros -->
     <div class="col-12">
         <div class="card shadow mb-4">
             <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <div class="col-6">
                     <h6 class="m-0 font-weight-bold text-primary">Trabajadores</h6>
+                    <?= $found_trabajadores ?? '' ?>
+                    de <?= $all_trabajadores ?? '' ?>
                 </div>
                 <div class="col-6">
                     <div class="m-0 font-weight-bold justify-content-end">
@@ -121,7 +128,7 @@
                         echo printTableHeader(
                             ['Username', 'Salario Bruto', 'Retención', 'Rol', 'País'],
                             $order,
-                            $input['sentido'] ?? null,
+                            // $input['sentido'] ?? null,
                             $queryParams
                         );
                         ?>

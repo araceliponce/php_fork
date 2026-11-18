@@ -8,7 +8,7 @@ var_dump($input);
 
 
 
-$onEditPage = str_contains($_SERVER['REQUEST_URI'], "/edit/");
+// $onEditPage = str_contains($_SERVER['REQUEST_URI'], "/edit/");
 ?>
 <div class="card shadow mb-4">
     <form method="post" action="">
@@ -29,16 +29,15 @@ $onEditPage = str_contains($_SERVER['REQUEST_URI'], "/edit/");
                             maxlength="50"
                             placeholder="MyUsername"
 
-                            <?= $onEditPage ?? 'readonly' ?> />
+                            <?= $onEditMode ? 'readonly' : '' ?> />
 
-                        <?php if ($onEditPage === false) :
-                        ?>
-                            <p class="text-danger small">
-                                <?php
-                                echo $errors['username'] ?? '';
-                                ?>
-                            </p>
-                        <? endif; ?>
+
+                        <p class="text-danger small">
+                            <?php
+                            echo $errors['username'] ?? '';
+                            ?>
+                        </p>
+
 
                     </div>
                 </div>
@@ -131,7 +130,7 @@ $onEditPage = str_contains($_SERVER['REQUEST_URI'], "/edit/");
 
 
 
-                <?php if ($onEditPage === true) :
+                <?php if ($onEditMode) :
                 ?>
                     <input type="submit" name="guardar_cambios" value="Guardar cambios" class="btn btn-primary ml-2" />
 

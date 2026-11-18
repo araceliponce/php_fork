@@ -149,7 +149,10 @@ class TrabajadorModel extends BaseDbModel
         return ($stmt->execute($insertData) && $stmt->rowCount() === 1);
     }
 
-    public function update(array $datos): bool
+    //  HUBO CAMBIOS EN ALGUNA FILA ES $stmt->rowCount() === 1
+
+    // si presiono en 'guardar cambios' no deberia salirle error por no haber modificado un valor, por eso no preguntamos si hubo cambios en tabla de bbdd
+    public function update(string $username, array $datos): bool
     {
 
         $sql = "UPDATE trabajadores 
@@ -162,10 +165,18 @@ class TrabajadorModel extends BaseDbModel
 
         // Si algun item del array $datos no está incluido en $this->allowedFields, no se enviará como parámetro a PDO.
         $updateData = array_filter($datos, fn($key) => in_array($key, $this->allowedFields), ARRAY_FILTER_USE_KEY);
-        $updateData['username'] = $datos['username']; //???????????????????
+        $updateData['username'] = $username;
         $updateData['activo'] = !empty($datos['activo']) ? 1 : 0;
 
         $stmt = $this->pdo->prepare($sql);
         return ($stmt->execute($updateData));
+    }
+
+
+    public function delete(string $username): bool
+    {
+        $sql = "DELETE FROM trabajadores WHERE username = :username";
+        $stmt = $this->pdo->prepare($sql);
+        return ($stmt->execute(['username' => $username]) && $stmt->rowCount() === 1);
     }
 }
